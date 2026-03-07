@@ -317,13 +317,13 @@
                 <i class="fa-solid fa-magnifying-glass text-blue-600 text-xl"></i>
             </div>
             <h1 class="text-4xl font-bold" style="font-family:'Cormorant Garamond',serif;">Lacak Pesanan</h1>
-            <p class="text-slate-500 mt-2">Masukkan nomor WA atau nomor order Anda untuk melihat status.</p>
+            <p class="text-slate-500 mt-2">Masukkan nomor order Anda untuk melihat status.</p>
         </div>
 
         <!-- Search Card -->
         <div class="card p-6 mb-6">
             <div class="search-wrap">
-                <input type="text" id="search-input" placeholder="Contoh: 08123456789 atau ORD-20260001"
+                <input type="text" id="search-input" placeholder="Contoh: ORD-20260001"
                     onkeydown="if(event.key==='Enter') doSearch()">
                 <button onclick="doSearch()" title="Cari">
                     <i class="fa-solid fa-magnifying-glass"></i>
