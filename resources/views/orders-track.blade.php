@@ -7,59 +7,243 @@
     <title>Lacak Pesanan – TierraStone</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
+        /* ── TOKENS (identik welcome & order) ── */
         :root {
-            --stone: #b5a89a;
-            --earth: #7c6b5d;
-            --dark: #1c1814;
-            --cream: #f5f1ec;
-            --blue: #2563eb;
+            --ink: #0f1923;
+            --ink2: #2d3f52;
+            --body: #4a6278;
+            --muted: #8aa0b4;
+            --border: #d6e4f0;
+            --surface: #eef5fb;
+            --bg: #f5f9fd;
+            --white: #ffffff;
+            --blue: #2a7de1;
+            --blue2: #1a60c0;
+            --blue-lt: #dbeeff;
+            --blue-xs: #f0f7ff;
+            --stone: #b0c4d8;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--cream);
-            color: var(--dark);
+            font-family: 'Syne', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            min-height: 100vh;
+            cursor: none;
         }
 
-        h1,
-        h2,
-        h3,
-        .serif {
-            font-family: 'Cormorant Garamond', serif;
+        /* ── CURSOR ── */
+        .cur-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--blue);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
         }
 
-        body::before {
-            content: '';
+        .cur-ring {
+            width: 32px;
+            height: 32px;
+            border: 1.5px solid rgba(42, 125, 225, .35);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width .3s, height .3s, border-color .3s;
+        }
+
+        body:has(a:hover) .cur-ring,
+        body:has(button:hover) .cur-ring {
+            width: 48px;
+            height: 48px;
+            border-color: var(--blue);
+        }
+
+        /* ── NOISE ── */
+        .noise {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 200;
+            opacity: .25;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+        }
+
+        /* ── BG BLOBS ── */
+        .bg-blobs {
             position: fixed;
             inset: 0;
             pointer-events: none;
             z-index: 0;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            overflow: hidden;
         }
 
-        /* Search bar */
+        .bg-blobs::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(42, 125, 225, .07) 0%, transparent 70%);
+            top: -150px;
+            right: -150px;
+        }
+
+        .bg-blobs::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(62, 207, 207, .05) 0%, transparent 70%);
+            bottom: -100px;
+            left: -100px;
+        }
+
+        /* ── NAV (identik) ── */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(245, 249, 253, .92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 2px 24px rgba(42, 125, 225, .06);
+        }
+
+        .nav-logo {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 19px;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--ink);
+            text-decoration: none;
+        }
+
+        .nav-logo span {
+            color: var(--blue);
+        }
+
+        .nav-link-sm {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--body);
+            text-decoration: none;
+            transition: color .2s;
+        }
+
+        .nav-link-sm:hover {
+            color: var(--blue);
+        }
+
+        .nav-cta-sm {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: .09em;
+            text-transform: uppercase;
+            color: var(--white);
+            background: var(--blue);
+            padding: 9px 20px;
+            border-radius: 2px;
+            text-decoration: none;
+            transition: all .25s ease;
+            box-shadow: 0 4px 14px rgba(42, 125, 225, .28);
+        }
+
+        .nav-cta-sm:hover {
+            background: var(--blue2);
+            transform: translateY(-1px);
+        }
+
+        /* ── PAGE ENTRANCE ── */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pu {
+            opacity: 0;
+            animation: fadeUp .55s cubic-bezier(.22, 1, .36, 1) both;
+        }
+
+        .d1 {
+            animation-delay: .06s;
+        }
+
+        .d2 {
+            animation-delay: .14s;
+        }
+
+        .d3 {
+            animation-delay: .22s;
+        }
+
+        /* ── MAIN CARD ── */
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(42, 125, 225, .04), 0 12px 48px rgba(42, 125, 225, .07);
+        }
+
+        /* ── SEARCH BAR ── */
         .search-wrap {
             position: relative;
         }
 
         .search-wrap input {
             width: 100%;
-            padding: 16px 56px 16px 20px;
-            border: 2px solid #e2e8f0;
-            border-radius: 16px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 16px;
-            background: white;
-            color: var(--dark);
+            padding: 14px 56px 14px 20px;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            font-family: 'Syne', sans-serif;
+            font-size: 14px;
+            background: var(--white);
+            color: var(--ink);
             outline: none;
-            transition: border-color .2s, box-shadow .2s;
+            transition: border-color .2s, box-shadow .2s, transform .15s;
         }
 
         .search-wrap input:focus {
             border-color: var(--blue);
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, .1);
+            box-shadow: 0 0 0 4px rgba(42, 125, 225, .1);
+            transform: translateY(-1px);
+        }
+
+        .search-wrap input::placeholder {
+            color: var(--stone);
         }
 
         .search-wrap button {
@@ -70,58 +254,64 @@
             background: var(--blue);
             color: white;
             border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
+            width: 38px;
+            height: 38px;
+            border-radius: 9px;
             cursor: pointer;
             display: grid;
             place-items: center;
-            font-size: 15px;
-            transition: background .2s;
+            font-size: 13px;
+            transition: background .2s, transform .2s;
         }
 
         .search-wrap button:hover {
-            background: #1d4ed8;
+            background: var(--blue2);
+            transform: translateY(-50%) scale(1.05);
         }
 
-        /* Card */
-        .card {
-            background: rgba(255, 255, 255, .8);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(181, 168, 154, .2);
-            border-radius: 20px;
-            box-shadow: 0 4px 32px rgba(28, 24, 20, .05);
-        }
-
-        /* Order row */
+        /* ── ORDER ROW ── */
         .order-row {
             display: flex;
             align-items: center;
-            gap: 16px;
-            padding: 16px 20px;
-            border-radius: 14px;
-            border: 1.5px solid transparent;
+            gap: 14px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1.5px solid var(--border);
+            background: var(--white);
             cursor: pointer;
-            transition: all .2s;
-            background: white;
+            transition: all .22s ease;
         }
 
         .order-row:hover {
             border-color: var(--blue);
-            box-shadow: 0 4px 16px rgba(37, 99, 235, .1);
-            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(42, 125, 225, .1);
+            transform: translateY(-2px);
         }
 
-        /* Status badge */
+        .order-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--blue-xs);
+            border: 1px solid var(--blue-lt);
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            color: var(--blue);
+            font-size: 13px;
+        }
+
+        /* ── STATUS BADGES ── */
         .badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 4px 12px;
+            padding: 4px 11px;
             border-radius: 999px;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 11px;
+            font-weight: 700;
             white-space: nowrap;
+            letter-spacing: .04em;
         }
 
         .badge-pending {
@@ -130,8 +320,8 @@
         }
 
         .badge-process {
-            background: #dbeafe;
-            color: #1e40af;
+            background: var(--blue-lt);
+            color: var(--blue2);
         }
 
         .badge-shipped {
@@ -150,131 +340,9 @@
             color: #991b1b;
         }
 
-        /* Modal overlay */
-        #modal-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 100;
-            background: rgba(28, 24, 20, .5);
-            backdrop-filter: blur(4px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-        }
-
-        #modal-overlay.open {
-            display: flex;
-            animation: fadeIn .2s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0
-            }
-
-            to {
-                opacity: 1
-            }
-        }
-
-        #modal-box {
-            background: white;
-            border-radius: 24px;
-            width: 100%;
-            max-width: 520px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 24px 80px rgba(28, 24, 20, .2);
-            animation: slideUp .25s ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(24px)
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0)
-            }
-        }
-
-        /* Timeline */
-        .timeline {
-            position: relative;
-            padding-left: 28px;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 9px;
-            top: 6px;
-            bottom: 6px;
-            width: 2px;
-            background: #e2e8f0;
-        }
-
-        .tl-item {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .tl-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .tl-dot {
-            position: absolute;
-            left: -28px;
-            top: 3px;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            border: 2px solid #e2e8f0;
-            background: white;
-            display: grid;
-            place-items: center;
-            font-size: 8px;
-        }
-
-        .tl-dot.done {
-            background: var(--blue);
-            border-color: var(--blue);
-            color: white;
-        }
-
-        .tl-dot.active {
-            background: white;
-            border-color: var(--blue);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, .15);
-        }
-
-        /* Divider */
-        .divider {
-            height: 1px;
-            background: linear-gradient(to right, transparent, #e2e8f0, transparent);
-            margin: 16px 0;
-        }
-
-        /* Empty / error state */
-        .empty-state {
-            text-align: center;
-            padding: 48px 24px;
-            color: #9ca3af;
-        }
-
-        .empty-state i {
-            font-size: 40px;
-            margin-bottom: 16px;
-            display: block;
-        }
-
-        /* Skeleton loader */
+        /* ── SKELETON ── */
         .skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(90deg, var(--surface) 25%, var(--blue-xs) 50%, var(--surface) 75%);
             background-size: 200% 100%;
             animation: shimmer 1.4s infinite;
             border-radius: 10px;
@@ -289,142 +357,448 @@
                 background-position: -200% 0
             }
         }
+
+        /* ── EMPTY STATE ── */
+        .empty-state {
+            text-align: center;
+            padding: 52px 24px;
+        }
+
+        .empty-state i {
+            font-size: 36px;
+            margin-bottom: 14px;
+            display: block;
+            color: var(--stone);
+        }
+
+        /* ── MODAL ── */
+        #modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 500;
+            background: rgba(15, 25, 35, .45);
+            backdrop-filter: blur(6px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        #modal-overlay.open {
+            display: flex;
+            animation: overlayIn .2s ease;
+        }
+
+        @keyframes overlayIn {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        #modal-box {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 520px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 24px 80px rgba(15, 25, 35, .18);
+            animation: modalUp .28s cubic-bezier(.22, 1, .36, 1);
+        }
+
+        @keyframes modalUp {
+            from {
+                opacity: 0;
+                transform: translateY(28px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        /* Modal scrollbar */
+        #modal-box::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        #modal-box::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        #modal-box::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        /* Modal close btn */
+        .modal-close {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            border: 1.5px solid var(--border);
+            background: var(--white);
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            color: var(--muted);
+            font-size: 14px;
+            transition: all .2s;
+        }
+
+        .modal-close:hover {
+            border-color: var(--blue);
+            color: var(--blue);
+            background: var(--blue-xs);
+        }
+
+        /* Info grid in modal */
+        .info-tile {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 14px;
+        }
+
+        .info-tile-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+
+        .info-tile-val {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        /* Modal divider */
+        .m-divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--border), transparent);
+            margin: 16px 0;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 28px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 6px;
+            bottom: 6px;
+            width: 2px;
+            background: var(--border);
+            border-radius: 2px;
+        }
+
+        .tl-item {
+            position: relative;
+            margin-bottom: 18px;
+        }
+
+        .tl-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .tl-dot {
+            position: absolute;
+            left: -28px;
+            top: 2px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            background: var(--white);
+            display: grid;
+            place-items: center;
+            font-size: 7px;
+        }
+
+        .tl-dot.done {
+            background: var(--blue);
+            border-color: var(--blue);
+            color: white;
+        }
+
+        .tl-dot.active {
+            background: var(--white);
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(42, 125, 225, .15);
+        }
+
+        .tl-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .tl-label.dim {
+            color: var(--stone);
+        }
+
+        .tl-time {
+            font-size: 11px;
+            margin-top: 2px;
+            color: var(--muted);
+        }
+
+        .tl-time.active-time {
+            color: var(--blue);
+            font-weight: 600;
+        }
+
+        .tl-time.dim-time {
+            color: var(--stone);
+        }
+
+        /* WA Button in modal */
+        .btn-wa-modal {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: #16a34a;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 10px;
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all .25s cubic-bezier(.34, 1.4, .64, 1);
+            box-shadow: 0 4px 20px rgba(21, 128, 61, .25);
+        }
+
+        .btn-wa-modal:hover {
+            background: #15803d;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(21, 128, 61, .35);
+        }
+
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::selection {
+            background: var(--blue);
+            color: white;
+        }
     </style>
 </head>
 
-<body class="min-h-screen">
+<body>
 
-    <!-- Nav -->
-    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 relative">
-        <div class="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="{{ route('welcome') }}" class="text-2xl font-bold tracking-tight text-slate-800" style="font-family:'Cormorant Garamond',serif;">TIERRA<span style="color:var(--blue)">STONE</span></a>
-            <div class="flex items-center gap-4">
-                <a href="{{ route('order') }}" class="hidden sm:inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-700 transition">
-                    <i class="fa-solid fa-pen-to-square"></i> Buat Pesanan
+    <div class="noise"></div>
+    <div class="bg-blobs"></div>
+    <div class="cur-dot" id="cur-dot"></div>
+    <div class="cur-ring" id="cur-ring"></div>
+
+    <!-- ── NAV ── -->
+    <nav>
+        <div class="max-w-3xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="{{ route('welcome') }}" class="nav-logo">TIERRA<span>STONE</span></a>
+            <div class="flex items-center gap-5">
+                <a href="{{ route('order') }}" class="nav-cta-sm hidden sm:inline-flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square" style="font-size:10px"></i> Buat Pesanan
                 </a>
-                <a href="{{ route('welcome') }}" class="text-sm text-slate-500 hover:text-slate-800 transition flex items-center gap-2">
-                    <i class="fa-solid fa-arrow-left text-xs"></i> Beranda
+                <a href="{{ route('welcome') }}" class="nav-link-sm">
+                    <i class="fa-solid fa-arrow-left" style="font-size:10px"></i> Beranda
                 </a>
             </div>
         </div>
     </nav>
 
-    <main class="relative z-10 max-w-2xl mx-auto px-4 py-12">
+    <main class="relative z-10 max-w-2xl mx-auto px-4 py-12 pb-20">
 
         <!-- Header -->
-        <div class="text-center mb-10">
-            <div class="inline-flex items-center justify-center w-14 h-14 bg-blue-50 rounded-2xl mb-4">
-                <i class="fa-solid fa-magnifying-glass text-blue-600 text-xl"></i>
+        <div class="pu d1 text-center mb-10">
+            <div style="display:inline-flex; align-items:center; justify-content:center;
+                    width:52px; height:52px; border-radius:14px;
+                    background:var(--blue-xs); border:1px solid var(--blue-lt); margin-bottom:18px">
+                <i class="fa-solid fa-magnifying-glass" style="color:var(--blue); font-size:18px"></i>
             </div>
-            <h1 class="text-4xl font-bold" style="font-family:'Cormorant Garamond',serif;">Lacak Pesanan</h1>
-            <p class="text-slate-500 mt-2">Masukkan nomor order Anda untuk melihat status.</p>
+            <div style="display:inline-flex; align-items:center; gap:10px; margin-bottom:12px; display:flex; justify-content:center">
+                <div style="width:20px; height:1.5px; background:var(--blue)"></div>
+                <span style="font-size:10px; font-weight:700; letter-spacing:.22em; text-transform:uppercase; color:var(--blue)">Tracking Pesanan</span>
+                <div style="width:20px; height:1.5px; background:var(--blue)"></div>
+            </div>
+            <h1 style="font-family:'Cormorant',serif; font-size:clamp(38px,5vw,56px); font-weight:300; line-height:.95; color:var(--ink)">
+                Lacak <em style="font-style:italic; color:var(--blue)">Pesanan</em> Anda
+            </h1>
+            <p style="font-size:14px; color:var(--body); margin-top:12px">
+                Masukkan nomor order, nomor HP, atau nama untuk melihat status pesanan.
+            </p>
         </div>
 
         <!-- Search Card -->
-        <div class="card p-6 mb-6">
+        <div class="card p-6 mb-5 pu d2">
             <div class="search-wrap">
-                <input type="text" id="search-input" placeholder="Contoh: ORD-20260001"
+                <input type="text" id="search-input"
+                    placeholder="Cari: ORD-20260001 / nomor HP / nama..."
                     onkeydown="if(event.key==='Enter') doSearch()">
                 <button onclick="doSearch()" title="Cari">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
             </div>
-            <p class="text-xs text-slate-400 mt-3 flex items-center gap-1.5">
-                <i class="fa-solid fa-circle-info"></i>
-                Gunakan nomor pesanan yang anda dapatkan dari whatsapp
+            <p style="font-size:11px; color:var(--muted); margin-top:10px; display:flex; align-items:center; gap:6px">
+                <i class="fa-solid fa-circle-info" style="color:var(--blue)"></i>
+                Gunakan nomor pesanan yang Anda terima via WhatsApp dari tim kami.
             </p>
         </div>
 
-        <!-- Results area -->
-        <div id="results-area"></div>
+        <!-- Results -->
+        <div id="results-area" class="pu d3"></div>
 
     </main>
 
-    <!-- ─── MODAL DETAIL ─────────────────────────────────── -->
+    <!-- ── MODAL ── -->
     <div id="modal-overlay" onclick="closeModalOutside(event)">
         <div id="modal-box">
-            <!-- Header -->
-            <div class="flex items-start justify-between p-6 pb-4">
+
+            <!-- Modal header -->
+            <div style="padding:24px 24px 0; display:flex; align-items:flex-start; justify-content:space-between">
                 <div>
-                    <p class="text-xs font-semibold tracking-widest uppercase text-slate-400 mb-1">Detail Pesanan</p>
-                    <h2 class="text-2xl font-bold" style="font-family:'Cormorant Garamond',serif;" id="m-order-id">—</h2>
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px">
+                        <div style="width:4px; height:14px; background:var(--blue); border-radius:2px"></div>
+                        <span style="font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--blue)">Detail Pesanan</span>
+                    </div>
+                    <h2 id="m-order-id" style="font-family:'Cormorant',serif; font-size:30px; font-weight:600; color:var(--ink); line-height:1">—</h2>
                 </div>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-700 transition w-9 h-9 rounded-full hover:bg-slate-100 grid place-items: center text-lg">
+                <button class="modal-close" onclick="closeModal()">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            <div class="divider mx-6 my-0"></div>
 
-            <!-- Body -->
-            <div class="p-6 space-y-5">
+            <div class="m-divider" style="margin:16px 24px 0"></div>
 
-                <!-- Status + tanggal -->
-                <div class="flex items-center justify-between">
+            <!-- Modal body -->
+            <div style="padding:20px 24px; display:flex; flex-direction:column; gap:16px">
+
+                <!-- Status + date -->
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px">
                     <div id="m-status-badge"></div>
-                    <span class="text-xs text-slate-400" id="m-date"></span>
+                    <span id="m-date" style="font-size:11px; color:var(--muted)"></span>
                 </div>
 
                 <!-- Info grid -->
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-slate-50 rounded-xl p-3">
-                        <p class="text-xs text-slate-400 mb-1">Nama</p>
-                        <p class="font-semibold text-sm" id="m-nama">—</p>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
+                    <div class="info-tile">
+                        <div class="info-tile-label">Nama</div>
+                        <div class="info-tile-val" id="m-nama">—</div>
                     </div>
-                    <div class="bg-slate-50 rounded-xl p-3">
-                        <p class="text-xs text-slate-400 mb-1">WhatsApp</p>
-                        <p class="font-semibold text-sm" id="m-phone">—</p>
+                    <div class="info-tile">
+                        <div class="info-tile-label">WhatsApp</div>
+                        <div class="info-tile-val" id="m-phone">—</div>
                     </div>
-                    <div class="bg-slate-50 rounded-xl p-3">
-                        <p class="text-xs text-slate-400 mb-1">Produk</p>
-                        <p class="font-semibold text-sm" id="m-produk">—</p>
+                    <div class="info-tile">
+                        <div class="info-tile-label">Produk</div>
+                        <div class="info-tile-val" id="m-produk">—</div>
                     </div>
-                    <div class="bg-slate-50 rounded-xl p-3">
-                        <p class="text-xs text-slate-400 mb-1">Jumlah</p>
-                        <p class="font-semibold text-sm" id="m-qty">—</p>
+                    <div class="info-tile">
+                        <div class="info-tile-label">Jumlah</div>
+                        <div class="info-tile-val" id="m-qty">—</div>
                     </div>
-                    <div class="bg-slate-50 rounded-xl p-3">
-                        <p class="text-xs text-slate-400 mb-1">Lokasi Proyek</p>
-                        <p class="font-semibold text-sm" id="m-kota">—</p>
+                    <div class="info-tile">
+                        <div class="info-tile-label">Lokasi Proyek</div>
+                        <div class="info-tile-val" id="m-kota">—</div>
                     </div>
-                    <div class="bg-slate-50 rounded-xl p-3">
-                        <p class="text-xs text-slate-400 mb-1">Tipe Proyek</p>
-                        <p class="font-semibold text-sm" id="m-tipe">—</p>
+                    <div class="info-tile">
+                        <div class="info-tile-label">Tipe Proyek</div>
+                        <div class="info-tile-val" id="m-tipe">—</div>
                     </div>
                 </div>
 
                 <!-- Catatan -->
-                <div id="m-catatan-wrap" class="bg-amber-50 border border-amber-100 rounded-xl p-3 hidden">
-                    <p class="text-xs text-amber-600 font-semibold mb-1"><i class="fa-solid fa-note-sticky mr-1"></i>Catatan</p>
-                    <p class="text-sm text-amber-900" id="m-catatan"></p>
+                <div id="m-catatan-wrap" class="hidden"
+                    style="background:var(--blue-xs); border:1px solid var(--blue-lt); border-radius:12px; padding:14px">
+                    <p style="font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--blue); margin-bottom:6px">
+                        <i class="fa-solid fa-note-sticky" style="margin-right:5px"></i>Catatan
+                    </p>
+                    <p id="m-catatan" style="font-size:13px; color:var(--ink2)"></p>
                 </div>
 
                 <!-- Timeline -->
                 <div>
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">Riwayat Status</p>
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px">
+                        <div style="width:4px; height:12px; background:var(--muted); border-radius:2px"></div>
+                        <span style="font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--muted)">Riwayat Status</span>
+                    </div>
                     <div class="timeline" id="m-timeline"></div>
                 </div>
             </div>
 
-            <!-- Footer -->
-            <div class="p-6 pt-0">
-                <a id="m-wa-link" href="#" target="_blank"
-                    class="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold transition">
-                    <i class="fa-brands fa-whatsapp text-lg"></i> Hubungi Kami via WhatsApp
+            <!-- Modal footer -->
+            <div style="padding:0 24px 24px">
+                <a id="m-wa-link" href="#" target="_blank" class="btn-wa-modal">
+                    <i class="fa-brands fa-whatsapp" style="font-size:17px"></i> Hubungi via WhatsApp
                 </a>
             </div>
         </div>
     </div>
 
-    <footer class="relative z-10 py-8 border-t border-slate-200 text-center text-slate-400 text-sm">
-        &copy; 2026 OMS TierraStone. All rights reserved.
+    <!-- ── FOOTER ── -->
+    <footer style="background:var(--ink); padding:36px 48px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; position:relative; z-index:10">
+        <div style="font-family:'Syne',sans-serif; font-weight:800; font-size:15px; letter-spacing:.14em; text-transform:uppercase; color:var(--white)">
+            TIERRA<span style="color:var(--blue)">STONE</span>
+        </div>
+        <div style="font-size:11px; color:var(--stone); letter-spacing:.07em">&copy; 2026 OMS TierraStone. All rights reserved.</div>
     </footer>
 
     <script>
-        // ─── CONFIG ──────────────────────────────────────────────────
-        const WA_NUMBER = '628123456789'; // ← Ganti nomor WA
+        // ── CURSOR ──
+        const dot = document.getElementById('cur-dot');
+        const ring = document.getElementById('cur-ring');
+        let mx = 0,
+            my = 0,
+            rx = 0,
+            ry = 0;
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX;
+            my = e.clientY;
+        });
+        (function raf() {
+            dot.style.left = mx + 'px';
+            dot.style.top = my + 'px';
+            rx += (mx - rx) * .12;
+            ry += (my - ry) * .12;
+            ring.style.left = rx + 'px';
+            ring.style.top = ry + 'px';
+            requestAnimationFrame(raf);
+        })();
 
-        // ─── MOCK DATA (ganti dengan fetch ke API Laravel) ──────────
-        // Struktur data ini sesuai dengan apa yang akan dikembalikan backend
+        // ── CONFIG ──
+        const WA_NUMBER = '6289530513637';
+
+        // ── MOCK DATA ──
         const MOCK_ORDERS = [{
                 id: 'ORD-20260001',
                 nama: 'Budi Santoso',
@@ -544,7 +918,6 @@
             },
         ];
 
-        // Status config
         const STATUS_CONFIG = {
             pending: {
                 label: 'Menunggu Konfirmasi',
@@ -573,7 +946,7 @@
             },
         };
 
-        // ─── SEARCH ──────────────────────────────────────────────────
+        // ── SEARCH ──
         function doSearch() {
             const raw = document.getElementById('search-input').value.trim().toLowerCase();
             const area = document.getElementById('results-area');
@@ -582,41 +955,40 @@
                 return;
             }
 
-            // Show skeleton
+            // Skeleton
             area.innerHTML = `
-        <div class="card p-5 space-y-3">
+        <div class="card p-5" style="display:flex; flex-direction:column; gap:12px">
             ${[1,2].map(()=>`
-            <div class="flex items-center gap-4">
-                <div class="skeleton w-10 h-10 rounded-xl flex-shrink-0"></div>
-                <div class="flex-1 space-y-2">
-                    <div class="skeleton h-4 w-1/3 rounded"></div>
-                    <div class="skeleton h-3 w-1/2 rounded"></div>
+            <div style="display:flex; align-items:center; gap:14px">
+                <div class="skeleton" style="width:40px; height:40px; flex-shrink:0; border-radius:10px"></div>
+                <div style="flex:1; display:flex; flex-direction:column; gap:7px">
+                    <div class="skeleton" style="height:13px; width:38%"></div>
+                    <div class="skeleton" style="height:11px; width:55%"></div>
                 </div>
-                <div class="skeleton h-6 w-24 rounded-full"></div>
+                <div class="skeleton" style="height:24px; width:90px; border-radius:999px"></div>
             </div>`).join('')}
         </div>`;
 
-            // Simulate API delay
             setTimeout(() => {
-                // ── In real app: replace with fetch('/api/orders/search?q='+raw) ──
+                // ── Replace with: fetch('/api/orders/search?q='+raw) ──
                 const results = MOCK_ORDERS.filter(o =>
                     o.phone.replace(/\D/g, '').includes(raw.replace(/\D/g, '')) ||
                     o.id.toLowerCase().includes(raw) ||
                     o.nama.toLowerCase().includes(raw)
                 );
-                renderResults(results, raw);
+                renderResults(results);
             }, 600);
         }
 
-        function renderResults(orders, query) {
+        function renderResults(orders) {
             const area = document.getElementById('results-area');
             if (!orders.length) {
                 area.innerHTML = `
             <div class="card">
                 <div class="empty-state">
-                    <i class="fa-solid fa-box-open text-slate-300"></i>
-                    <p class="font-semibold text-slate-500">Pesanan tidak ditemukan</p>
-                    <p class="text-sm mt-1">Coba gunakan nomor nomor pesanan yang tepat.</p>
+                    <i class="fa-solid fa-box-open"></i>
+                    <p style="font-weight:700; font-size:15px; color:var(--ink2); margin-bottom:6px">Pesanan tidak ditemukan</p>
+                    <p style="font-size:13px; color:var(--muted)">Coba gunakan nomor order, nomor HP, atau nama yang tepat.</p>
                 </div>
             </div>`;
                 return;
@@ -626,35 +998,31 @@
                 const st = STATUS_CONFIG[o.status] || STATUS_CONFIG.pending;
                 return `
         <div class="order-row" onclick="openModal('${o.id}')">
-            <div class="w-10 h-10 rounded-xl bg-blue-50 flex-shrink-0 grid place-items-center text-blue-600">
-                <i class="fa-solid fa-box text-sm"></i>
+            <div class="order-icon"><i class="fa-solid fa-box"></i></div>
+            <div style="flex:1; min-width:0">
+                <p style="font-size:13px; font-weight:700; color:var(--ink)">${o.id}</p>
+                <p style="font-size:11px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-top:2px">${o.produk} · ${o.qty} · ${o.kota}</p>
             </div>
-            <div class="flex-1 min-w-0">
-                <p class="font-semibold text-sm">${o.id}</p>
-                <p class="text-xs text-slate-400 truncate">${o.produk} · ${o.qty}</p>
-            </div>
-            <div>
-                <span class="badge ${st.cls}">
-                    <i class="fa-solid ${st.icon}"></i>${st.label}
-                </span>
-            </div>
-            <i class="fa-solid fa-chevron-right text-slate-300 text-sm flex-shrink-0"></i>
+            <span class="badge ${st.cls}">
+                <i class="fa-solid ${st.icon}"></i>${st.label}
+            </span>
+            <i class="fa-solid fa-chevron-right" style="color:var(--stone); font-size:11px; flex-shrink:0"></i>
         </div>`;
             }).join('');
 
             area.innerHTML = `
         <div class="card p-5">
-            <p class="text-xs text-slate-400 mb-4 font-medium">${orders.length} pesanan ditemukan</p>
-            <div class="space-y-2">${rows}</div>
+            <p style="font-size:11px; color:var(--muted); font-weight:600; letter-spacing:.06em; margin-bottom:12px">
+                ${orders.length} pesanan ditemukan
+            </p>
+            <div style="display:flex; flex-direction:column; gap:8px">${rows}</div>
         </div>`;
         }
 
-        // ─── MODAL ───────────────────────────────────────────────────
+        // ── MODAL ──
         function openModal(orderId) {
-            // In real app: fetch('/api/orders/'+orderId) then populate
             const o = MOCK_ORDERS.find(x => x.id === orderId);
             if (!o) return;
-
             const st = STATUS_CONFIG[o.status] || STATUS_CONFIG.pending;
 
             document.getElementById('m-order-id').textContent = o.id;
@@ -666,11 +1034,9 @@
             document.getElementById('m-kota').textContent = o.kota;
             document.getElementById('m-tipe').textContent = o.tipe || '—';
 
-            // Status badge
             document.getElementById('m-status-badge').innerHTML =
-                `<span class="badge ${st.cls}"><i class="fa-solid ${st.icon}"></i>${st.label}</span>`;
+                `<span class="badge ${st.cls}"><i class="fa-solid ${st.icon}" style="margin-right:4px"></i>${st.label}</span>`;
 
-            // Catatan
             const noteWrap = document.getElementById('m-catatan-wrap');
             if (o.catatan) {
                 noteWrap.classList.remove('hidden');
@@ -679,19 +1045,16 @@
                 noteWrap.classList.add('hidden');
             }
 
-            // Timeline
             document.getElementById('m-timeline').innerHTML = o.timeline.map(t => `
         <div class="tl-item">
             <div class="tl-dot ${t.done ? 'done' : t.active ? 'active' : ''}">
                 ${t.done ? '<i class="fa-solid fa-check"></i>' : ''}
             </div>
-            <p class="font-semibold text-sm ${!t.done && !t.active ? 'text-slate-300' : ''}">${t.label}</p>
-            <p class="text-xs ${t.done ? 'text-slate-400' : t.active ? 'text-blue-500 font-medium' : 'text-slate-300'} mt-0.5">${t.time}</p>
-        </div>
-    `).join('');
+            <p class="tl-label ${!t.done && !t.active ? 'dim' : ''}">${t.label}</p>
+            <p class="tl-time ${t.active ? 'active-time' : !t.done ? 'dim-time' : ''}">${t.time}</p>
+        </div>`).join('');
 
-            // WA link
-            const msg = encodeURIComponent(`Halo TierraStone, saya ingin menanyakan status pesanan saya:\n\n🔖 *No. Order:* ${o.id}\n👤 *Nama:* ${o.nama}\n\nMohon informasinya. Terima kasih!`);
+            const msg = encodeURIComponent(`Halo TierraStone, saya ingin menanyakan status pesanan:\n\n🔖 *No. Order:* ${o.id}\n👤 *Nama:* ${o.nama}\n\nMohon informasinya. Terima kasih!`);
             document.getElementById('m-wa-link').href = `https://wa.me/${WA_NUMBER}?text=${msg}`;
 
             document.getElementById('modal-overlay').classList.add('open');
@@ -706,15 +1069,13 @@
         function closeModalOutside(e) {
             if (e.target.id === 'modal-overlay') closeModal();
         }
-
         document.addEventListener('keydown', e => {
             if (e.key === 'Escape') closeModal();
         });
 
-
+        // ── URL PARAM ──
         window.addEventListener('DOMContentLoaded', () => {
-            const params = new URLSearchParams(window.location.search);
-            const q = params.get('q');
+            const q = new URLSearchParams(window.location.search).get('q');
             if (q) {
                 document.getElementById('search-input').value = q;
                 doSearch();

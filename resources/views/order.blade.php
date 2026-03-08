@@ -317,7 +317,7 @@
             overflow: hidden;
             border-radius: 14px;
             border: 2px solid var(--border);
-            background: var(--white);
+            background: #1c2530;
             transition: all .28s cubic-bezier(.34, 1.4, .64, 1);
         }
 
@@ -789,33 +789,33 @@
                         <div class="check-badge"><i class="fa-solid fa-check"></i></div>
                         <div class="img-wrap">
                             <img src="https://static.wixstatic.com/media/ef7d36_87da53ee99ff44238a005f84bacfa038~mv2.png/v1/fill/w_538,h_538,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/granite-stone_110707071.png"
-                                alt="Marmer" class="w-full h-full object-cover">
+                                alt="Marmer" style="width:100%;height:100%;object-fit:contain;object-position:center;padding:8px">
                         </div>
                         <div class="p-2.5">
-                            <p style="font-size:12px; font-weight:700; color:var(--ink)">Marmer Premium</p>
-                            <p style="font-size:11px; color:var(--muted); margin-top:2px">Lantai &amp; dinding</p>
+                            <p style="font-size:12px; font-weight:700; color:var(--white)">Marmer Premium</p>
+                            <p style="font-size:11px; color:var(--stone); margin-top:2px">Lantai &amp; dinding</p>
                         </div>
                     </div>
                     <div class="prod-card" data-product="Granit Alam" onclick="selectProduct(this)">
                         <div class="check-badge"><i class="fa-solid fa-check"></i></div>
                         <div class="img-wrap">
                             <img src="https://static.wixstatic.com/media/ef7d36_87da53ee99ff44238a005f84bacfa038~mv2.png/v1/fill/w_538,h_538,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/granite-stone_110707071.png"
-                                alt="Granit" class="w-full h-full object-cover">
+                                alt="Granit" style="width:100%;height:100%;object-fit:contain;object-position:center;padding:8px">
                         </div>
                         <div class="p-2.5">
-                            <p style="font-size:12px; font-weight:700; color:var(--ink)">Granit Alam</p>
-                            <p style="font-size:11px; color:var(--muted); margin-top:2px">Outdoor &amp; dapur</p>
+                            <p style="font-size:12px; font-weight:700; color:var(--white)">Granit Alam</p>
+                            <p style="font-size:11px; color:var(--stone); margin-top:2px">Outdoor &amp; dapur</p>
                         </div>
                     </div>
                     <div class="prod-card" data-product="Batu Landscape" onclick="selectProduct(this)">
                         <div class="check-badge"><i class="fa-solid fa-check"></i></div>
                         <div class="img-wrap">
                             <img src="https://static.wixstatic.com/media/ef7d36_87da53ee99ff44238a005f84bacfa038~mv2.png/v1/fill/w_538,h_538,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/granite-stone_110707071.png"
-                                alt="Landscape" class="w-full h-full object-cover">
+                                alt="Landscape" style="width:100%;height:100%;object-fit:contain;object-position:center;padding:8px">
                         </div>
                         <div class="p-2.5">
-                            <p style="font-size:12px; font-weight:700; color:var(--ink)">Batu Landscape</p>
-                            <p style="font-size:11px; color:var(--muted); margin-top:2px">Taman &amp; kolam</p>
+                            <p style="font-size:12px; font-weight:700; color:var(--white)">Batu Landscape</p>
+                            <p style="font-size:11px; color:var(--stone); margin-top:2px">Taman &amp; kolam</p>
                         </div>
                     </div>
                 </div>
@@ -832,8 +832,14 @@
                         <option value="Batu Candi">Batu Candi</option>
                         <option value="Batu Templek">Batu Templek</option>
                         <option value="Paras Jogja">Paras Jogja</option>
-                        <option value="Lainnya">Lainnya</option>
+                        <option value="Lainnya">Lainnya...</option>
                     </select>
+                </div>
+
+                <!-- Input custom jenis batu (muncul saat "Lainnya" dipilih) -->
+                <div id="jenis-custom-wrap" class="hidden" style="margin-top:10px">
+                    <input type="text" id="jenis-custom" class="fi"
+                        placeholder="Tulis jenis batu yang Anda inginkan...">
                 </div>
 
                 <div class="sec-divider"></div>
@@ -908,24 +914,6 @@
                         <label class="fi-label">Email <span class="fi-opt">(opsional)</span></label>
                         <input type="email" id="email" class="fi" placeholder="email@domain.com" autocomplete="email">
                     </div>
-                    <div>
-                        <label class="fi-label">Kota / Lokasi Proyek <span style="color:#dc2626">*</span></label>
-                        <input type="text" id="kota" class="fi" placeholder="Contoh: Jakarta Selatan">
-                    </div>
-                    <div>
-                        <label class="fi-label">Tipe Proyek</label>
-                        <div class="sel-wrap">
-                            <select id="tipe" class="fi">
-                                <option value="">Pilih tipe proyek...</option>
-                                <option>Rumah Tinggal</option>
-                                <option>Apartemen</option>
-                                <option>Komersial / Perkantoran</option>
-                                <option>Villa / Resort</option>
-                                <option>Landscape / Taman</option>
-                                <option>Lainnya</option>
-                            </select>
-                        </div>
-                    </div>
                     <div class="md:col-span-2">
                         <label class="fi-label">Catatan Tambahan <span class="fi-opt">(opsional)</span></label>
                         <textarea id="catatan" class="fi" rows="3" placeholder="Warna, motif, atau permintaan khusus..."></textarea>
@@ -984,8 +972,6 @@
                     <div class="sum-row"><span class="sum-lbl">Nama</span> <span class="sum-val" id="s-nama">—</span></div>
                     <div class="sum-row"><span class="sum-lbl">WhatsApp</span> <span class="sum-val" id="s-phone">—</span></div>
                     <div class="sum-row" id="s-email-row" style="display:none"><span class="sum-lbl">Email</span><span class="sum-val" id="s-email">—</span></div>
-                    <div class="sum-row"><span class="sum-lbl">Lokasi Proyek</span> <span class="sum-val" id="s-kota">—</span></div>
-                    <div class="sum-row"><span class="sum-lbl">Tipe Proyek</span> <span class="sum-val" id="s-tipe">—</span></div>
                     <div class="sum-row" style="border:none; padding-bottom:0"><span class="sum-lbl">Catatan</span><span class="sum-val" id="s-catatan">—</span></div>
                 </div>
 
@@ -1073,6 +1059,9 @@
                 selectedFinishing = this.value.trim();
                 document.getElementById('finishing').value = selectedFinishing;
             });
+            document.getElementById('jenis-custom').addEventListener('input', function() {
+                if (this.value.trim()) selectedProduct = this.value.trim();
+            });
         });
 
         // ── PRODUCT CARD ──
@@ -1082,14 +1071,43 @@
             selectedProduct = el.dataset.product;
             const dd = document.getElementById('jenis-batu');
             dd.value = [...dd.options].some(o => o.value === selectedProduct) ? selectedProduct : '';
+            hideJenisCustom();
         }
 
         function syncProductFromDropdown(val) {
-            if (!val) return;
+            document.querySelectorAll('.prod-card').forEach(c => c.classList.remove('selected'));
+            if (val === 'Lainnya') {
+                selectedProduct = '';
+                showJenisCustom();
+                return;
+            }
+            hideJenisCustom();
+            if (!val) {
+                selectedProduct = '';
+                return;
+            }
             selectedProduct = val;
             const card = document.querySelector(`.prod-card[data-product="${val}"]`);
-            document.querySelectorAll('.prod-card').forEach(c => c.classList.remove('selected'));
             if (card) card.classList.add('selected');
+        }
+
+        function showJenisCustom(prefill) {
+            const wrap = document.getElementById('jenis-custom-wrap');
+            const input = document.getElementById('jenis-custom');
+            wrap.classList.remove('hidden');
+            if (prefill) input.value = prefill;
+            setTimeout(() => input.focus(), 60);
+        }
+
+        function hideJenisCustom() {
+            document.getElementById('jenis-custom-wrap').classList.add('hidden');
+            document.getElementById('jenis-custom').value = '';
+        }
+
+        function getProductValue() {
+            const dd = document.getElementById('jenis-batu');
+            if (dd.value === 'Lainnya') return document.getElementById('jenis-custom').value.trim();
+            return selectedProduct;
         }
 
         // ── CHIPS ──
@@ -1131,7 +1149,11 @@
 
         // ── STEP NAV ──
         function goStep2() {
-            if (!selectedProduct) return showErr('Pilih jenis batu terlebih dahulu.');
+            const _produk = getProductValue();
+            if (!_produk) {
+                const _dd = document.getElementById('jenis-batu');
+                return showErr(_dd.value === 'Lainnya' ? 'Tulis jenis batu yang Anda inginkan.' : 'Pilih jenis batu terlebih dahulu.');
+            }
             const qty = parseInt(document.getElementById('qty').value);
             if (!qty || qty < 5) return showErr('Minimum order adalah 5 m².');
             if (!document.getElementById('size').value.trim()) return showErr('Ukuran batu wajib diisi.');
@@ -1140,7 +1162,6 @@
             const ph = document.getElementById('phone').value.trim();
             if (!ph) return showErr('Nomor HP wajib diisi.');
             if (!/^\d{8,14}$/.test(ph)) return showErr('Format nomor tidak valid (contoh: 81234567890).');
-            if (!document.getElementById('kota').value.trim()) return showErr('Lokasi proyek wajib diisi.');
             fillSummary();
             animTransition('step-1', 'step-2', false);
             setPills(2);
@@ -1215,8 +1236,6 @@
             document.getElementById('s-finishing').textContent = fin;
             document.getElementById('s-nama').textContent = g('nama');
             document.getElementById('s-phone').textContent = '+62' + g('phone');
-            document.getElementById('s-kota').textContent = g('kota');
-            document.getElementById('s-tipe').textContent = document.getElementById('tipe').value || '—';
             document.getElementById('s-catatan').textContent = g('catatan') || '—';
             const er = document.getElementById('s-email-row');
             document.getElementById('s-email').textContent = email;
@@ -1228,27 +1247,24 @@
             const g = id => document.getElementById(id).value.trim();
             const fin = getFinishingValue();
             const email = g('email');
-            const tipe = document.getElementById('tipe').value || '-';
             const note = g('catatan') || '-';
             const msg =
-                `Halo TierraStone! 👋
+                `Halo TierraStone! 
 
 Saya ingin memesan batu alam:
 
-🪨 *Jenis Batu:* ${selectedProduct}
-📐 *Ukuran:* ${g('size')}
-📦 *Jumlah:* ${document.getElementById('qty').value} m²
-✨ *Finishing:* ${fin}
+*Jenis Batu:* ${getProductValue()}
+*Ukuran:* ${g('size')}
+*Jumlah:* ${document.getElementById('qty').value} m²
+*Finishing:* ${fin}
 
 *Data Pemesan:*
-👤 Nama: ${g('nama')}
-📱 No. WA: +62${g('phone')}${email ? '\n📧 Email: '+email : ''}
-📍 Lokasi Proyek: ${g('kota')}
-🏗️ Tipe Proyek: ${tipe}
+Nama: ${g('nama')}
+No. WA: +62${g('phone')}${email ? '\n📧 Email: '+email : ''}
 
-📝 *Catatan:* ${note}
+*Catatan:* ${note}
 
-Mohon informasi stok dan harga. Terima kasih!`;
+Mohon informasi selanjutnya. Terima kasih!`;
             window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
         }
     </script>
