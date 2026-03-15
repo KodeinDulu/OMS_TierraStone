@@ -9,6 +9,11 @@ class CreateOrder extends CreateRecord
 {
     protected static string $resource = OrderResource::class;
 
+    public static function canAccess(array $parameters = []): bool
+    {
+        return auth()->user()->hasRole('sales');
+    }
+
     // Auto-assign sales_id before saving
     protected function mutateFormDataBeforeCreate(array $data): array
     {

@@ -27,6 +27,18 @@ class OrdersTable
                         'rejected'    => 'danger',
                         default       => 'secondary',
                     }),
+                TextColumn::make('production_status')
+                    ->label('Status Pengerjaan')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'produksi'           => 'warning',
+                        'klasifikasi_besar'  => 'info',
+                        'klasifikasi_sedang' => 'primary',
+                        'klasifikasi_kecil'  => 'secondary',
+                        'finishing'          => 'success',
+                    })
+                    ->placeholder('-')
+                    ->sortable(),
                 TextColumn::make('created_at')->dateTime(),
             ])
             ->filters([

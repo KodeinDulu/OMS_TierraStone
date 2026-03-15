@@ -12,6 +12,11 @@ class ListOrders extends ListRecords
 
     protected function getHeaderActions(): array
     {
+
+        if (auth()->user()->hasRole('mandor')) {
+            return [];
+        }
+
         return [
             CreateAction::make(),
         ];

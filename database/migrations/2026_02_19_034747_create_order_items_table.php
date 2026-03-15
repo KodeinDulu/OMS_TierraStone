@@ -15,10 +15,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained()->cascadeOnDelete();
             $table->foreignId('stone_type_id')->constrained('stone_types')->restrictOnDelete();
-            $table->string('finishing');
-            $table->unsignedInteger('width');   // in cm
-            $table->unsignedInteger('height');  // in cm
-            $table->unsignedInteger('quantity');
+            $table->string('finishing')->nullable();
+            $table->decimal('width', 10, 2);
+            $table->decimal('height', 10, 2);
+            $table->decimal('thickness', 10, 2);
+            $table->unsignedInteger('quantity_pcs');
+            $table->decimal('quantity_sqm', 10, 2);
+            $table->unsignedInteger('unit_price')->nullable();
             $table->timestamps();
         });
     }
