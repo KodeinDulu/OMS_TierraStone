@@ -12,7 +12,10 @@ class OrderItem extends Model
         'finishing',
         'width',
         'height',
-        'quantity'
+        'thickness',
+        'quantity_pcs',
+        'quantity_sqm',
+        'unit_price',
     ];
 
     public function orderItems()

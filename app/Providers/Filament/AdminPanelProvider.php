@@ -21,6 +21,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Http\Middleware\AdminPanelMiddleware;
 use App\Filament\Admin\Resources\OrderResource;
 use App\Filament\Admin\Resources\UserResource;
+use App\Filament\Admin\Widgets\OrderStatusChart;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -29,6 +30,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->id('admin')
             ->path('admin') // URL: website.com/admin
+            ->brandName('Tierra Stone')
             ->login()
             ->registration(false)
             ->resources([
@@ -48,7 +50,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\Filament\Admin\Widgets')
             ->widgets([
                 AccountWidget::class,
-                FilamentInfoWidget::class,
+                OrderStatusChart::class,
             ])
             ->middleware([
                 EncryptCookies::class,

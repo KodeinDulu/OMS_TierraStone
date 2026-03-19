@@ -10,56 +10,25 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\FileUpload;
+
+use App\Models\StoneType;
+use App\Models\FinishingType;
 
 class OrderForm
 {
-    /**
-     * Dummy stone options — key = integer ID sesuai urutan insert di DB.
-     * Ganti dengan StoneType::pluck('name','id') kalau model sudah siap.
-     */
     private static function stoneOptions(): array
     {
-        try {
-            // Coba query DB dulu
-            return \App\Models\StoneType::where('is_available', true)
-                ->pluck('name', 'id')
-                ->toArray();
-        } catch (\Throwable) {
-            // Fallback: integer key dummy supaya tidak crash saat DB kosong/model belum ada
-            return [
-                1 => 'Marmer Premium',
-                2 => 'Granit Alam',
-                3 => 'Batu Landscape',
-                4 => 'Andesit',
-                5 => 'Palimanan',
-                6 => 'Batu Candi',
-                7 => 'Batu Templek',
-                8 => 'Paras Jogja',
-            ];
-        }
+        return StoneType::where('is_available', true)
+            ->pluck('name', 'id')
+            ->toArray();
     }
 
-    /**
-     * Finishing options — nilai string, disimpan langsung ke kolom finishing.
-     * Ganti dengan FinishingType::pluck('name','name') kalau model sudah siap.
-     */
     private static function finishingOptions(): array
     {
-        try {
-            return \App\Models\FinishingType::where('is_available', true)
-                ->pluck('name', 'name')
-                ->toArray();
-        } catch (\Throwable) {
-            return [
-                'Bakar'       => 'Bakar',
-                'Bush Hammer' => 'Bush Hammer',
-                'Poles'       => 'Poles',
-                'Tekstur'     => 'Tekstur',
-                'Sandblast'   => 'Sandblast',
-                'Alur'        => 'Alur',
-                'Natural'     => 'Natural',
-            ];
-        }
+        return FinishingType::where('is_available', true)
+            ->pluck('name', 'name')
+            ->toArray();
     }
 
     public static function configure(Schema $schema): Schema
@@ -89,15 +58,40 @@ class OrderForm
                             Select::make('status')
                                 ->label('Status Pesanan')
                                 ->options([
-                                    'pending'     => 'Pending',
-                                    'on_hold'     => 'On Hold',
-                                    'on_progress' => 'On Progress',
-                                    'finished'    => 'Finished',
-                                    'rejected'    => 'Rejected',
+                                    'pending'          => 'Pending',
+                                    'production'       => 'Production',
+                                    'on_progress'      => 'On Progress',
+                                    'ready_to_deliver' => 'Ready to Deliver',
+                                    'rejected'         => 'Rejected',
+                                    'done'             => 'Done',
                                 ])
+                                ->default('pending')
                                 ->native(false)
                                 ->prefixIcon('heroicon-o-arrow-path')
                                 ->required(),
+
+                            Select::make('production_status')
+                                ->label('Status Pengerjaan')
+                                ->options([
+                                    'produksi'          => 'Produksi',
+                                    'klasifikasi_besar' => 'Klasifikasi Besar',
+                                    'klasifikasi_sedang'=> 'Klasifikasi Sedang',
+                                    'klasifikasi_kecil' => 'Klasifikasi Kecil',
+                                    'finishing'         => 'Finishing',
+                                ])
+                                ->nullable()
+                                ->prefixIcon('heroicon-o-wrench')
+                                ->native(false),
+
+                            TextInput::make('freight')
+                                ->label('Ongkos Kirim')
+                                ->numeric()
+                                ->nullable()
+                                ->required()
+                                ->default(0)
+                                ->prefixIcon('heroicon-o-truck')
+                                ->prefix('Rp')
+                                ->disabled($isMandor)
                         ]),
                     ]),
 
@@ -171,40 +165,46 @@ class OrderForm
                                     ->searchable()
                                     ->native(false)
                                     ->prefixIcon('heroicon-o-paint-brush')
-                                    ->createOptionForm([
-                                        TextInput::make('finishing')
-                                            ->label('Nama Finishing Baru')
-                                            ->required()
-                                            ->placeholder('Contoh: Ukir'),
-                                    ])
                                     ->createOptionUsing(fn(array $data): string => $data['finishing'])
-                                    ->required()
+                                    ->nullable()
                                     ->columnSpanFull(),
 
                                 TextInput::make('width')
-                                    ->label('Lebar (cm)')
+                                    ->label('Lebar')
                                     ->numeric()
                                     ->required()
                                     ->prefixIcon('heroicon-o-arrows-right-left')
-                                    ->suffix('cm')
-                                    ->minValue(1),
+                                    ->placeholder('0,0'),
 
                                 TextInput::make('height')
-                                    ->label('Tinggi (cm)')
+                                    ->label('Tinggi')
                                     ->numeric()
                                     ->required()
                                     ->prefixIcon('heroicon-o-arrows-up-down')
-                                    ->suffix('cm')
+                                    ->placeholder('0,0'),
+
+                                TextInput::make('thickness')
+                                    ->label('Ketebalan')
+                                    ->numeric()
+                                    ->required()
+                                    ->placeholder('0,0')
+                                    ->prefixIcon('heroicon-o-arrows-up-down'),
+
+                                TextInput::make('quantity_pcs')
+                                    ->label('Jumlah (pcs)')
+                                    ->numeric()
+                                    ->required()
+                                    ->placeholder('0')
+                                    ->prefixIcon('heroicon-o-calculator')
                                     ->minValue(1),
 
-                                TextInput::make('quantity')
+                                TextInput::make('quantity_sqm')
                                     ->label('Jumlah (m²)')
                                     ->numeric()
                                     ->required()
                                     ->prefixIcon('heroicon-o-calculator')
-                                    ->suffix('m²')
-                                    ->minValue(5)
-                                    ->helperText('Minimum order 5 m²'),
+                                    ->placeholder('0,0')
+                                    ->suffix('m²'),
 
                                 TextInput::make('unit_price')
                                     ->label('Harga Satuan (Rp)')
@@ -220,18 +220,31 @@ class OrderForm
                     ]),
 
                 // ── CATATAN ───────────────────────────────────────────────
-                Section::make('Catatan')
-                    ->description('Permintaan khusus, warna, motif, atau instruksi lainnya.')
+                Section::make('Preferensi Pelanggan')
+                    ->description('Referensi khusus, warna, motif, atau instruksi lainnya.')
                     ->icon('heroicon-o-chat-bubble-left-ellipsis')
                     ->iconColor('gray')
-                    ->collapsible()
-                    ->collapsed()
                     ->schema([
                         Textarea::make('notes')
-                            ->label('')
+                            ->label('Catatan Khusus')
                             ->rows(4)
                             ->placeholder('Contoh: Warna dominan abu-abu, permukaan tidak terlalu kasar...')
                             ->columnSpanFull(),
+
+                        FileUpload::make('reference_image')
+                            ->label('Gambar Referensi')
+                            ->image()
+                            ->multiple()
+                            ->maxFiles(5)
+                            ->reorderable()
+                            ->disk('public')
+                            ->directory('order-references')
+                            ->visibility('public')
+                            ->maxSize(2048)
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                            ->helperText('Format: JPG, PNG, WEBP. Maksimal 2MB.')
+                            ->columnSpanFull()
+                            ->disabled($isMandor),
                     ]),
 
             ]);

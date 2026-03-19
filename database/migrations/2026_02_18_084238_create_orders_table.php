@@ -18,8 +18,17 @@ return new class extends Migration
             $table->string('customer_name');
             $table->string('customer_phone')->nullable();
             $table->string('customer_email')->nullable();
-            $table->enum('status', ['pending', 'on_hold', 'on_progress', 'finished', 'rejected'])->default('pending');
+            $table->enum('status', ['pending', 'production', 'on_progress', 'ready_to_deliver', 'rejected', 'done'])->default('pending');
+            $table->enum('production_status', [
+                'produksi',
+                'klasifikasi_besar',
+                'klasifikasi_sedang',
+                'klasifikasi_kecil',
+                'finishing',
+            ])->nullable();
             $table->text('notes')->nullable();
+            $table->json('reference_image')->nullable();
+            $table->decimal('freight', 12, 2)->default(0);
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->softDeletes();
             $table->timestamps();

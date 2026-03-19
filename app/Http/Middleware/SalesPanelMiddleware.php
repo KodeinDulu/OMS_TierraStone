@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Filament\Notifications\Notification;
 
 class SalesPanelMiddleware
 {
@@ -18,6 +19,13 @@ class SalesPanelMiddleware
         if (auth()->check() && auth()->user()->hasAnyRole(['sales', 'mandor', 'admin'])) {
             return $next($request);
         }
-        abort(403);
+
+        Notification::make()
+            ->title('403 - Forbidden')
+            ->body('You do not have access to Admin panel.')
+            ->danger()
+            ->send();
+
+        return redirect('/');
     }
 }

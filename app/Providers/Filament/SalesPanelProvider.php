@@ -28,6 +28,7 @@ class SalesPanelProvider extends PanelProvider
         return $panel
             ->id('sales')
             ->path('sales')
+            ->brandName('Tierra Stone')
             ->default()
             ->login()
             ->registration(false)
@@ -42,7 +43,6 @@ class SalesPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Sales/Widgets'), for: 'App\Filament\Sales\Widgets')
             ->widgets([
                 AccountWidget::class,
-                FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

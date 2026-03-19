@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->boolean('is_available')->default(true);
+            $table->string('reference_image')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

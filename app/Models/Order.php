@@ -11,7 +11,12 @@ class Order extends Model
 
     protected $fillable = [
         'order_code', 'sales_id', 'customer_name',
-        'customer_phone', 'customer_email', 'status', 'notes', 'updated_by'
+        'customer_phone', 'customer_email', 'status', 'production_status', 'notes', 'freight', 'updated_by',
+        'reference_image'
+    ];
+
+    protected $casts = [
+        'reference_image' => 'array',
     ];
 
     public function sales() { return $this->belongsTo(User::class, 'sales_id'); }
@@ -23,5 +28,15 @@ class Order extends Model
         static::creating(function ($order) {
             $order->order_code = 'ORD-' . strtoupper(uniqid());
         });
+    }
+
+    public function getReferenceImageUrlsAttribute(): array
+    {
+        if (!$this->reference_image) return [];
+
+        return array_map(
+            fn($path) => asset('storage/' . $path),
+            $this->reference_image
+        );
     }
 }

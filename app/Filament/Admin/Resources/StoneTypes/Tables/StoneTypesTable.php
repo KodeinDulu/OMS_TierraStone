@@ -21,6 +21,11 @@ class StoneTypesTable
                     ->label('Jenis Batu')
                     ->searchable(),
 
+                TextColumn::make('description')
+                    ->label('Deskripsi')
+                    ->limit(50)
+                    ->tooltip(fn ($record) => $record->description),
+
                 IconColumn::make('is_available')
                     ->label('Tersedia')
                     ->boolean(),
