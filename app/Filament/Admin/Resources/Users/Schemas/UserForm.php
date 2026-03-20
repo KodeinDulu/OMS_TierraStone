@@ -22,6 +22,12 @@ class UserForm
                         ->label('Nama Lengkap')
                         ->required()
                         ->prefixIcon('heroicon-o-user'),
+                TextInput::make('email')
+                ->label('Email')
+                    ->email()
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->prefixIcon('heroicon-o-envelope'),
 
                     TextInput::make('password')
                         ->label(fn (string $operation) => $operation === 'edit' ? 'Password Baru (opsional)' : 'Password')
