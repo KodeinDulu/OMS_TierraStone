@@ -10,8 +10,7 @@ Route::get('/', [CompanyProfileController::class, 'index'])->name('welcome');
 // Form pesanan
 Route::get('/order', [OrderController::class, 'create'])->name('order');
 
-// Lacak pesanan
+// UI halaman tracking
 Route::get('/lacak', [OrderController::class, 'track'])->name('orders.track');
 
-// API JSON – dipanggil oleh JavaScript di halaman tracking
-Route::get('/api/orders/search', [OrderController::class, 'search']);
+
