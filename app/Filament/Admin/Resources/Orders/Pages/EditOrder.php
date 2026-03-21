@@ -5,6 +5,8 @@ namespace App\Filament\Admin\Resources\Orders\Pages;
 use App\Filament\Admin\Resources\Orders\OrderResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Actions\Action;
+use App\Services\InvoiceService;
 
 class EditOrder extends EditRecord
 {
@@ -13,7 +15,28 @@ class EditOrder extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('download_invoice')
+                ->label('Download Invoice')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->color('info')
+                ->action(function () {
+                    $order = $this->record;
+                    $service = app(InvoiceService::class);
+                    $filename = 'Invoice-' . $order->order_code . '.pdf';
+
+                    return response()->streamDownload(
+                        function () use ($service, $order) {
+                            echo $service->stream($order)->getContent();
+                        },
+                        $filename,
+                        ['Content-Type' => 'application/pdf']
+                    );
+                }),
             DeleteAction::make(),
         ];
+    }
+    protected function afterSave(): void
+    {
+        $this->record->updateQuietly(['updated_by' => auth()->id()]);
     }
 }
