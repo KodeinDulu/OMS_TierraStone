@@ -8,13 +8,6 @@ use Illuminate\Http\Response;
 
 class InvoiceService
 {
-    /**
-     * Generate PDF invoice for an order and return a download response.
-     *
-     * Usage (e.g. in a Filament Action or Controller):
-     *
-     *   return app(InvoiceService::class)->download($order);
-     */
     public function download(Order $order): Response
     {
         $order->loadMissing('items.stoneType');

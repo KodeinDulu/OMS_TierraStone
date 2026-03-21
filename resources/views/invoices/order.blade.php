@@ -6,7 +6,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Invoice {{ $order->order_code }}</title>
     <style>
-        /* ── RESET & BASE ── */
         * {
             margin: 0;
             padding: 0;
@@ -14,623 +13,538 @@
         }
 
         @page {
-            margin: 0;
+            margin: 50px 60px;
             size: A4 portrait;
         }
 
         body {
             font-family: 'DejaVu Sans', 'Helvetica Neue', Arial, sans-serif;
             font-size: 10px;
-            color: #0f1923;
-            background: #ffffff;
+            color: #1a1a1a;
+            background: #fff;
             line-height: 1.5;
         }
 
-        /* ── HEADER BAND ── */
+        /* ── HEADER ── */
         .header {
-            background: #0f1923;
-            padding: 36px 48px 32px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Decorative corner accent */
-        .header-accent {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 220px;
-            height: 100%;
-            background: linear-gradient(135deg, transparent 40%, rgba(42, 125, 225, 0.18) 100%);
-        }
-
-        .header-accent-dot {
-            position: absolute;
-            top: -60px;
-            right: -60px;
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            background: rgba(42, 125, 225, 0.12);
-        }
-
-        .header-inner {
-            position: relative;
-            z-index: 2;
             display: table;
             width: 100%;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #ddd;
         }
 
         .header-left {
             display: table-cell;
-            vertical-align: bottom;
-            width: 55%;
+            vertical-align: top;
+            width: 60%;
         }
 
         .header-right {
             display: table-cell;
             vertical-align: top;
             text-align: right;
+            width: 40%;
         }
 
-        .logo-mark {
-            font-size: 22px;
+        .invoice-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+
+        .company-name {
+            font-size: 12px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .company-info {
+            font-size: 9px;
+            color: #555;
+            line-height: 1.7;
+            margin-top: 3px;
+        }
+
+        .company-contact {
+            font-size: 9px;
+            color: #555;
+            line-height: 1.7;
+            text-align: right;
+        }
+
+        .logo-text {
+            font-size: 16px;
             font-weight: 900;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            color: #ffffff;
+            letter-spacing: 0.08em;
+            color: #1a8fc4;
         }
 
-        .logo-mark span {
-            color: #2a7de1;
-        }
-
-        .logo-tagline {
-            font-size: 9px;
-            color: #8aa0b4;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            margin-top: 3px;
-        }
-
-        .invoice-label {
+        .logo-text-sub {
             font-size: 9px;
             font-weight: 700;
-            letter-spacing: 0.22em;
-            text-transform: uppercase;
-            color: #2a7de1;
-            margin-bottom: 4px;
+            letter-spacing: 0.06em;
+            color: #1a8fc4;
         }
 
-        .invoice-number {
-            font-size: 26px;
-            font-weight: 300;
-            color: #ffffff;
-            letter-spacing: 0.04em;
-            font-family: 'DejaVu Serif', Georgia, serif;
-        }
-
-        .invoice-date {
-            font-size: 9px;
-            color: #8aa0b4;
-            margin-top: 3px;
-        }
-
-        /* ── STATUS BADGE in header ── */
-        .status-badge {
-            display: inline-block;
-            padding: 3px 12px;
-            border-radius: 999px;
-            font-size: 8px;
-            font-weight: 700;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            margin-top: 8px;
-        }
-
-        .status-pending {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .status-on_hold {
-            background: #f1f5f9;
-            color: #475569;
-        }
-
-        .status-on_progress {
-            background: #dbeeff;
-            color: #1a60c0;
-        }
-
-        .status-finished {
-            background: #dcfce7;
-            color: #15803d;
-        }
-
-        .status-rejected {
-            background: #fee2e2;
-            color: #b91c1c;
-        }
-
-        /* ── BODY ── */
-        .body {
-            padding: 36px 48px;
-        }
-
-        /* ── INFO ROW ── */
+        /* ── BILL TO + INVOICE META ── */
         .info-row {
             display: table;
             width: 100%;
-            margin-bottom: 28px;
-        }
-
-        .info-block {
-            display: table-cell;
-            vertical-align: top;
-            width: 50%;
-            padding-right: 24px;
-        }
-
-        .info-block:last-child {
-            padding-right: 0;
-            padding-left: 24px;
-            text-align: right;
-        }
-
-        .info-label {
-            font-size: 8px;
-            font-weight: 700;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: #2a7de1;
-            margin-bottom: 6px;
-            border-bottom: 1px solid #d6e4f0;
-            padding-bottom: 4px;
-        }
-
-        .info-name {
-            font-size: 13px;
-            font-weight: 700;
-            color: #0f1923;
-            margin-bottom: 2px;
-        }
-
-        .info-meta {
-            font-size: 9.5px;
-            color: #4a6278;
-            line-height: 1.6;
-        }
-
-        .info-code {
-            font-size: 11px;
-            font-family: 'DejaVu Serif', Georgia, serif;
-            font-weight: 400;
-            color: #0f1923;
-            margin-bottom: 2px;
-        }
-
-        /* ── TABLE ── */
-        .section-title {
-            font-size: 8px;
-            font-weight: 700;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: #2a7de1;
-            margin-bottom: 8px;
-            display: table;
-            width: 100%;
-        }
-
-        .section-title-line {
-            display: inline-block;
-            width: 20px;
-            height: 1.5px;
-            background: #2a7de1;
-            vertical-align: middle;
-            margin-right: 8px;
-        }
-
-        table.items {
-            width: 100%;
-            border-collapse: collapse;
             margin-bottom: 24px;
         }
 
-        table.items thead tr {
-            background: #0f1923;
+        .info-left {
+            display: table-cell;
+            vertical-align: top;
+            width: 50%;
         }
 
-        table.items thead th {
-            padding: 9px 12px;
-            font-size: 8px;
+        .info-right {
+            display: table-cell;
+            vertical-align: top;
+            width: 50%;
+        }
+
+        .info-label {
+            font-size: 9px;
             font-weight: 700;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            color: #8aa0b4;
-            text-align: left;
+            color: #1a1a1a;
+            margin-bottom: 4px;
         }
 
-        table.items thead th:last-child {
-            text-align: right;
-        }
-
-        table.items tbody tr {
-            border-bottom: 1px solid #eef5fb;
-        }
-
-        table.items tbody tr:nth-child(even) {
-            background: #f5f9fd;
-        }
-
-        table.items tbody td {
-            padding: 10px 12px;
+        .info-value {
             font-size: 10px;
-            color: #2d3f52;
+            color: #333;
+            line-height: 1.7;
+        }
+
+        .info-value strong {
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .meta-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .meta-table td {
+            padding: 3px 0;
+            font-size: 10px;
             vertical-align: top;
         }
 
-        table.items tbody td:last-child {
+        .meta-table .meta-label {
+            text-align: right;
+            color: #555;
+            padding-right: 10px;
+            width: 50%;
+        }
+
+        .meta-table .meta-sep {
+            width: 10px;
+            text-align: center;
+            color: #555;
+        }
+
+        .meta-table .meta-val {
             text-align: right;
             font-weight: 600;
+            color: #1a1a1a;
         }
 
-        .item-stone {
+        /* ── ITEMS TABLE ── */
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 6px;
+        }
+
+        .items-table thead tr {
+            background: #f0f0ee;
+        }
+
+        .items-table th {
+            padding: 8px 10px;
+            font-size: 8.5px;
             font-weight: 700;
-            color: #0f1923;
-            font-size: 10.5px;
+            letter-spacing: 0.04em;
+            color: #1a1a1a;
+            text-align: left;
+            border-bottom: 1.5px solid #1a1a1a;
+            border-top: 1.5px solid #1a1a1a;
         }
 
-        .item-finish {
-            font-size: 9px;
-            color: #8aa0b4;
-            margin-top: 2px;
+        .items-table th.r {
+            text-align: right;
         }
 
-        .item-dim {
-            font-size: 9px;
-            color: #4a6278;
+        .items-table th.c {
+            text-align: center;
+        }
+
+        .items-table td {
+            padding: 9px 10px;
+            font-size: 10px;
+            color: #333;
+            border-bottom: 0.5px solid #ddd;
+            vertical-align: top;
+        }
+
+        .items-table td.r {
+            text-align: right;
+        }
+
+        .items-table td.c {
+            text-align: center;
+        }
+
+        .items-table td.bold {
+            font-weight: 600;
+            color: #1a1a1a;
         }
 
         /* ── TOTALS ── */
-        .totals {
+        .totals-row {
             display: table;
             width: 100%;
-            margin-top: 4px;
-        }
-
-        .totals-spacer {
-            display: table-cell;
-            width: 55%;
-        }
-
-        .totals-block {
-            display: table-cell;
-            width: 45%;
-        }
-
-        .total-row {
-            display: table;
-            width: 100%;
-            padding: 6px 0;
-            border-bottom: 1px solid #eef5fb;
-        }
-
-        .total-row:last-child {
-            border: none;
-        }
-
-        .total-label {
-            display: table-cell;
-            font-size: 9px;
-            color: #8aa0b4;
-        }
-
-        .total-value {
-            display: table-cell;
-            text-align: right;
-            font-size: 10px;
-            font-weight: 600;
-            color: #0f1923;
-        }
-
-        .grand-total-row {
-            background: #0f1923;
-            border-radius: 8px;
-            padding: 12px 16px;
             margin-top: 8px;
-            display: table;
+            margin-bottom: 28px;
+        }
+
+        .totals-left {
+            display: table-cell;
+            vertical-align: top;
+            width: 52%;
+        }
+
+        .totals-right {
+            display: table-cell;
+            vertical-align: top;
+            width: 48%;
+        }
+
+        .totals-table {
             width: 100%;
+            border-collapse: collapse;
         }
 
-        .grand-total-label {
-            display: table-cell;
-            font-size: 9px;
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: #8aa0b4;
+        .totals-table td {
+            padding: 5px 10px;
+            font-size: 10px;
         }
 
-        .grand-total-value {
-            display: table-cell;
+        .totals-table .t-label {
             text-align: right;
-            font-size: 16px;
-            font-weight: 700;
-            color: #ffffff;
-            font-family: 'DejaVu Serif', Georgia, serif;
+            color: #555;
+            font-weight: 500;
         }
 
-        .grand-total-note {
-            font-size: 8px;
-            color: #8aa0b4;
+        .totals-table .t-sep {
+            width: 10px;
+            text-align: center;
+            color: #555;
+        }
+
+        .totals-table .t-val {
             text-align: right;
-            margin-top: 4px;
+            font-weight: 600;
+            color: #1a1a1a;
         }
 
-        /* ── NOTES SECTION ── */
+        .totals-table tr.total-final td {
+            padding-top: 8px;
+            font-weight: 700;
+            font-style: italic;
+            border-top: 1px solid #ccc;
+        }
+
+        .totals-table tr.total-final .t-label {
+            color: #1a1a1a;
+            font-weight: 700;
+            font-style: italic;
+        }
+
+        /* ── NOTES ── */
         .notes-section {
-            margin-top: 28px;
-            background: #f0f7ff;
-            border: 1px solid #dbeeff;
-            border-left: 3px solid #2a7de1;
-            border-radius: 6px;
-            padding: 12px 16px;
+            margin-bottom: 24px;
         }
 
-        .notes-label {
-            font-size: 8px;
+        .notes-title {
+            font-size: 10px;
             font-weight: 700;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            color: #2a7de1;
+            color: #1a1a1a;
             margin-bottom: 5px;
         }
 
         .notes-text {
-            font-size: 9.5px;
-            color: #4a6278;
-            line-height: 1.6;
+            font-size: 9px;
+            color: #555;
+            line-height: 1.8;
+            padding-left: 18px;
         }
 
-        /* ── FOOTER ── */
-        .footer {
-            margin-top: 36px;
-            padding-top: 16px;
-            border-top: 1px solid #d6e4f0;
+        /* ── BOTTOM: BANK + SIGNATURE ── */
+        .bottom-row {
             display: table;
             width: 100%;
+            margin-top: 24px;
         }
 
-        .footer-left {
+        .bottom-left {
             display: table-cell;
-            vertical-align: bottom;
+            vertical-align: top;
+            width: 55%;
         }
 
-        .footer-right {
+        .bottom-right {
             display: table-cell;
+            vertical-align: top;
+            width: 45%;
             text-align: right;
-            vertical-align: bottom;
         }
 
-        .footer-brand {
-            font-size: 12px;
+        .bank-title {
+            font-size: 10px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 6px;
+            text-decoration: underline;
+        }
+
+        .bank-box {
+            border: 1px solid #1a1a1a;
+            padding: 10px 14px;
+            display: inline-block;
+        }
+
+        .bank-box p {
+            font-size: 10px;
+            color: #1a1a1a;
+            line-height: 1.7;
+        }
+
+        .bank-box p.bank-name {
+            font-weight: 700;
+        }
+
+        .signature-block {
+            text-align: center;
+            display: inline-block;
+        }
+
+        .sig-label {
+            font-size: 10px;
+            color: #555;
+            margin-bottom: 4px;
+        }
+
+        .sig-stamp {
+            font-size: 18px;
             font-weight: 900;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            color: #2d3f52;
+            letter-spacing: 0.06em;
+            color: #1a8fc4;
+            margin: 24px 0 4px;
         }
 
-        .footer-brand span {
-            color: #2a7de1;
+        .sig-stamp-sub {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            color: #1a8fc4;
         }
 
-        .footer-meta {
-            font-size: 8px;
-            color: #8aa0b4;
-            margin-top: 3px;
-        }
-
-        .footer-stamp {
-            font-size: 8px;
-            color: #8aa0b4;
-            font-style: italic;
-        }
-
-        /* ── PAGE BREAK ── */
-        .page-break {
-            page-break-after: always;
+        .dim {
+            color: #999;
         }
     </style>
 </head>
 
 <body>
 
+    @php
+    $freight = $order->freight ?? 0;
+    $grandTotal = $subtotal + $freight;
+    @endphp
+
     {{-- ── HEADER ── --}}
     <div class="header">
-        <div class="header-accent"></div>
-        <div class="header-accent-dot"></div>
-        <div class="header-inner">
-            <div class="header-left">
-                <div class="logo-mark">TIERRA<span>STONE</span></div>
-                <div class="logo-tagline">Natural Stone Supplier</div>
-                @php
-                $statusLabels = [
-                'pending' => 'Pending',
-                'on_hold' => 'On Hold',
-                'on_progress' => 'On Progress',
-                'finished' => 'Selesai',
-                'rejected' => 'Dibatalkan',
-                ];
-                $statusKey = $order->status ?? 'pending';
-                @endphp
-                <div class="status-badge status-{{ $statusKey }}">
-                    {{ $statusLabels[$statusKey] ?? ucfirst($statusKey) }}
-                </div>
+        <div class="header-left">
+            <div class="invoice-title">INVOICE</div>
+            <div class="company-name">Tierra Stone Indonesia</div>
+            <div class="company-info">
+                Jalan Magelang Km 15 belakang SPBU Medari<br>
+                Sleman, Yogyakarta
             </div>
-            <div class="header-right">
-                <div class="invoice-label">Invoice</div>
-                <div class="invoice-number">{{ $order->order_code }}</div>
-                <div class="invoice-date">{{ $date }}</div>
+        </div>
+        <div class="header-right">
+            <div class="company-contact">
+                +6289683000050<br>
+                tierrastone.id@gmail.com<br>
+                tierrastone.com/id
+            </div>
+            <div style="margin-top: 8px;">
+                <span class="logo-text">TIERRA</span>
+                <span class="logo-text-sub">STONE</span>
             </div>
         </div>
     </div>
 
-    {{-- ── BODY ── --}}
-    <div class="body">
-
-        {{-- Info row: customer + order meta --}}
-        <div class="info-row">
-            <div class="info-block">
-                <div class="info-label">Ditagihkan Kepada</div>
-                <div class="info-name">{{ $order->customer_name }}</div>
-                <div class="info-meta">
-                    @if($order->customer_phone)
-                    +62{{ $order->customer_phone }}<br>
-                    @endif
-                    @if($order->customer_email)
-                    {{ $order->customer_email }}
-                    @endif
-                </div>
-            </div>
-            <div class="info-block">
-                <div class="info-label">Detail Invoice</div>
-                <div class="info-code">{{ $order->order_code }}</div>
-                <div class="info-meta">
-                    Tanggal: {{ $date }}<br>
-                    Status: {{ $statusLabels[$statusKey] ?? ucfirst($statusKey) }}<br>
-                    Total Item: {{ $items->count() }} jenis batu
-                </div>
-            </div>
-        </div>
-
-        {{-- Items table --}}
-        <div class="section-title">
-            <span class="section-title-line"></span>Rincian Pesanan
-        </div>
-
-        <table class="items">
-            <thead>
-                <tr>
-                    <th style="width:4%">#</th>
-                    <th style="width:30%">Jenis Batu &amp; Finishing</th>
-                    <th style="width:20%">Dimensi</th>
-                    <th style="width:12%">Jumlah</th>
-                    <th style="width:17%">Harga Satuan</th>
-                    <th style="width:17%">Subtotal</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($items as $i => $item)
-                @php
-                $unitPrice = $item->unit_price ?? 0;
-                $qty = $item->quantity ?? 0;
-                $lineTotal = $unitPrice * $qty;
-                $stoneName = $item->stoneType?->name ?? ('Item #' . ($i + 1));
-                @endphp
-                <tr>
-                    <td style="color:#8aa0b4">{{ $i + 1 }}</td>
-                    <td>
-                        <div class="item-stone">{{ $stoneName }}</div>
-                        @if($item->finishing)
-                        <div class="item-finish">✦ {{ $item->finishing }}</div>
-                        @endif
-                    </td>
-                    <td>
-                        <div class="item-dim">
-                            @if($item->width && $item->height)
-                            {{ $item->width }} × {{ $item->height }} cm
-                            @else
-                            —
-                            @endif
-                        </div>
-                    </td>
-                    <td>{{ number_format($qty, 0, ',', '.') }} m²</td>
-                    <td>
-                        @if($unitPrice)
-                        Rp {{ number_format($unitPrice, 0, ',', '.') }}
-                        @else
-                        <span style="color:#b0c4d8">Belum ditetapkan</span>
-                        @endif
-                    </td>
-                    <td>
-                        @if($lineTotal)
-                        Rp {{ number_format($lineTotal, 0, ',', '.') }}
-                        @else
-                        —
-                        @endif
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-
-        {{-- Totals --}}
-        <div class="totals">
-            <div class="totals-spacer"></div>
-            <div class="totals-block">
-                <div class="total-row">
-                    <div class="total-label">Subtotal</div>
-                    <div class="total-value">
-                        @if($subtotal)
-                        Rp {{ number_format($subtotal, 0, ',', '.') }}
-                        @else
-                        <span style="color:#b0c4d8; font-weight:400">Harga belum ditetapkan</span>
-                        @endif
-                    </div>
-                </div>
-                <div class="total-row">
-                    <div class="total-label">Pajak (PPN 11%)</div>
-                    <div class="total-value">
-                        @if($subtotal)
-                        Rp {{ number_format($subtotal * 0.11, 0, ',', '.') }}
-                        @else
-                        —
-                        @endif
-                    </div>
-                </div>
-                <div class="grand-total-row">
-                    <div class="grand-total-label">Total</div>
-                    <div class="grand-total-value">
-                        @if($subtotal)
-                        Rp {{ number_format($subtotal * 1.11, 0, ',', '.') }}
-                        @else
-                        <span style="font-size:11px; font-weight:400; color:#8aa0b4">Menunggu penetapan harga</span>
-                        @endif
-                    </div>
-                </div>
-                @if($subtotal)
-                <div class="grand-total-note">*Sudah termasuk PPN 11%</div>
+    {{-- ── BILL TO + META ── --}}
+    <div class="info-row">
+        <div class="info-left">
+            <div class="info-label">Bill To:</div>
+            <div class="info-value">
+                <strong>{{ $order->customer_name }}</strong><br>
+                @if($order->customer_phone)
+                +62{{ $order->customer_phone }}<br>
+                @endif
+                @if($order->customer_email)
+                {{ $order->customer_email }}
                 @endif
             </div>
         </div>
-
-        {{-- Notes --}}
-        @if($order->notes)
-        <div class="notes-section">
-            <div class="notes-label">Catatan</div>
-            <div class="notes-text">{{ $order->notes }}</div>
+        <div class="info-right">
+            <table class="meta-table">
+                <tr>
+                    <td class="meta-label">Invoice No.</td>
+                    <td class="meta-sep">:</td>
+                    <td class="meta-val">{{ $order->order_code }}</td>
+                </tr>
+                <tr>
+                    <td class="meta-label">Invoice Date</td>
+                    <td class="meta-sep">:</td>
+                    <td class="meta-val">{{ $date }}</td>
+                </tr>
+                <tr>
+                    <td class="meta-label">Status</td>
+                    <td class="meta-sep">:</td>
+                    <td class="meta-val">{{ ucfirst(str_replace('_', ' ', $order->status)) }}</td>
+                </tr>
+            </table>
         </div>
-        @endif
-
-        {{-- Footer --}}
-        <div class="footer">
-            <div class="footer-left">
-                <div class="footer-brand">TIERRA<span>STONE</span></div>
-                <div class="footer-meta">
-                    Dokumen ini dibuat otomatis oleh sistem TierraStone OMS.<br>
-                    Dicetak pada {{ $date }}
-                </div>
-            </div>
-            <div class="footer-right">
-                <div class="footer-stamp">
-                    Sah tanpa tanda tangan apabila<br>
-                    diterbitkan oleh sistem.
-                </div>
-            </div>
-        </div>
-
     </div>
+
+    {{-- ── ITEMS TABLE ── --}}
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th style="width:4%">#</th>
+                <th style="width:18%">Description</th>
+                <th style="width:11%">Finishing</th>
+                <th class="c" style="width:10%">Size</th>
+                <th class="c" style="width:9%">Thickness</th>
+                <th class="r" style="width:9%">Qty (Pcs)</th>
+                <th class="r" style="width:10%">Qty (sqm)</th>
+                <th class="r" style="width:13%">Price</th>
+                <th class="r" style="width:16%">Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($items as $i => $item)
+            @php
+            $unitPrice = $item->unit_price ?? 0;
+            $pcs = $item->quantity_pcs ?? 0;
+            $sqm = $item->quantity_sqm ?? 0;
+            $lineTotal = $unitPrice * $sqm;
+            $stoneName = $item->stoneType?->name ?? ('Item #' . ($i + 1));
+            $size = ($item->width && $item->height) ? $item->width . 'x' . $item->height : '—';
+            @endphp
+            <tr>
+                <td>{{ $i + 1 }}</td>
+                <td class="bold">{{ $stoneName }}</td>
+                <td>{{ $item->finishing ?? '—' }}</td>
+                <td class="c">{{ $size }}</td>
+                <td class="c">{{ $item->thickness ?? '—' }}</td>
+                <td class="r">{{ $pcs ? number_format($pcs, 0, ',', '.') : '—' }}</td>
+                <td class="r">{{ $sqm ? number_format($sqm, 2, ',', '.') : '—' }}</td>
+                <td class="r">
+                    @if($unitPrice)
+                    Rp{{ number_format($unitPrice, 0, ',', '.') }}
+                    @else
+                    <span class="dim">—</span>
+                    @endif
+                </td>
+                <td class="r bold">
+                    @if($lineTotal)
+                    Rp{{ number_format($lineTotal, 0, ',', '.') }}
+                    @else
+                    <span class="dim">—</span>
+                    @endif
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    {{-- ── TOTALS + NOTES ── --}}
+    <div class="totals-row">
+        <div class="totals-left">
+            <div class="notes-section">
+                <div class="notes-title">Notes:</div>
+                <div class="notes-text">
+                    1. Tidak termasuk PPN<br>
+                    2. Tidak dapat di retur, kecuali ukuran tidak presisi/tidak dapat dipasang dengan baik
+                    @if($order->notes)
+                    <br>3. {{ $order->notes }}
+                    @endif
+                </div>
+            </div>
+        </div>
+        <div class="totals-right">
+            <table class="totals-table">
+                <tr>
+                    <td class="t-label">Subtotal</td>
+                    <td class="t-sep">:</td>
+                    <td class="t-val">
+                        @if($subtotal) Rp{{ number_format($subtotal, 0, ',', '.') }}
+                        @else <span class="dim">—</span>
+                        @endif
+                    </td>
+                </tr>
+                <tr>
+                    <td class="t-label">Freight</td>
+                    <td class="t-sep">:</td>
+                    <td class="t-val">
+                        @if($freight) Rp{{ number_format($freight, 0, ',', '.') }}
+                        @else Rp0
+                        @endif
+                    </td>
+                </tr>
+                <tr class="total-final">
+                    <td class="t-label">Total</td>
+                    <td class="t-sep">:</td>
+                    <td class="t-val">
+                        @if($grandTotal) Rp{{ number_format($grandTotal, 0, ',', '.') }}
+                        @else <span class="dim">—</span>
+                        @endif
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    {{-- ── BANK + SIGNATURE ── --}}
+    <div class="bottom-row">
+        <div class="bottom-left">
+            <div class="bank-title">Transfer Bank / BG via BCA</div>
+            <div class="bank-box">
+                <p class="bank-name">BCA</p>
+                <p>0373064537</p>
+                <p>Khrisna Widya Gunawan</p>
+            </div>
+        </div>
+        <div class="bottom-right">
+            <div class="signature-block">
+                <div class="sig-label">Best Regards,</div>
+                <div class="sig-stamp">TIERRA</div>
+                <div class="sig-stamp-sub">STONE</div>
+            </div>
+        </div>
+    </div>
+
 </body>
 
 </html>
