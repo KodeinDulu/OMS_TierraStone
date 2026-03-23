@@ -14,6 +14,8 @@ WORKDIR /var/www
 
 COPY . .
 
+RUN chmod +x /var/www/docker/start.sh
+
 RUN mkdir -p /var/www/storage/framework/cache \
     /var/www/storage/framework/sessions \
     /var/www/storage/framework/views \
