@@ -4,6 +4,7 @@ set -x
 php-fpm -D
 
 php artisan migrate --force
+php artisan db:seed --force
 php artisan storage:link --force
 
 cat > /etc/nginx/http.d/default.conf << EOF
@@ -25,11 +26,5 @@ server {
 }
 EOF
 
-# Kill any existing nginx
 pkill nginx || true
-
-nginx -g "daemon off;" 2>&1
-echo "nginx exited: $?"
-
-
-php artisan db:seed --force
+nginx -g "daemon off;"
