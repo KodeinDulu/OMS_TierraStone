@@ -17,7 +17,7 @@ use Filament\Tables\Table;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
-    protected static ?string $navigationLabel = 'Sales Accounts';
+    protected static ?string $navigationLabel = 'Accounts';
     protected static BackedEnum|String|null $navigationIcon = 'heroicon-o-users';
 
     public static function form(Schema $schema): Schema
