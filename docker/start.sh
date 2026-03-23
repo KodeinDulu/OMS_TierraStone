@@ -1,16 +1,12 @@
 #!/bin/sh
 set -x
 
-# Start PHP-FPM in background
 php-fpm -D
 
-# Run migrations
 php artisan migrate --force
 
-# Create storage link
 php artisan storage:link --force
 
-# Write nginx config with correct PORT
 cat > /etc/nginx/http.d/default.conf << EOF
 server {
     listen ${PORT};
@@ -30,5 +26,9 @@ server {
 }
 EOF
 
-# Start nginx in foreground
+echo "=== nginx config ===" 
+cat /etc/nginx/http.d/default.conf
+echo "=== test nginx ===" 
+nginx -t
+echo "=== starting nginx ==="
 nginx -g "daemon off;"
