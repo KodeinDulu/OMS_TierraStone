@@ -2,10 +2,11 @@ FROM php:8.2-fpm-alpine
 
 RUN apk add --no-cache \
     git curl zip unzip nginx nodejs npm \
-    icu-dev libzip-dev libpng-dev oniguruma-dev
+    icu-dev libzip-dev libpng-dev oniguruma-dev \
+    libpq-dev                          
 
 RUN docker-php-ext-install \
-    pdo_mysql mbstring bcmath gd zip intl pcntl
+    pdo_mysql pdo_pgsql pgsql mbstring bcmath gd zip intl pcntl
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -30,4 +31,4 @@ RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 COPY docker/nginx.conf /etc/nginx/http.d/default.conf
 
 EXPOSE 80
-CMD sh -c "php artisan storage:link --force && php-fpm -D && php artisan migrate:fresh --seed --force && nginx -g 'daemon off;'"
+CMD sh -c "php artisan storage:link --force && php-fpm -D && nginx -g 'daemon off;'"
