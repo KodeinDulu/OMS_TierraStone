@@ -35,5 +35,5 @@ EXPOSE 80
 CMD sh -c "php artisan storage:link --force && \
     php-fpm -D && \
     php artisan migrate --force && \
-    sed -i \"s/listen 80/listen \${PORT}/g\" /etc/nginx/http.d/default.conf && \
+    echo \"server { listen \${PORT}; root /var/www/public; index index.php; location / { try_files \\\$uri \\\$uri/ /index.php?\\\$query_string; } location ~ \\.php\$ { fastcgi_pass 127.0.0.1:9000; fastcgi_index index.php; fastcgi_param SCRIPT_FILENAME \\\$realpath_root\\\$fastcgi_script_name; include fastcgi_params; } }\" > /etc/nginx/http.d/default.conf && \
     nginx -g 'daemon off;'"
