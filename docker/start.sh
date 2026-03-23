@@ -30,3 +30,6 @@ pkill nginx || true
 
 nginx -g "daemon off;" 2>&1
 echo "nginx exited: $?"
+
+
+php artisan db:seed --force
