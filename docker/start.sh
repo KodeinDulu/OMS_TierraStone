@@ -5,6 +5,7 @@ php-fpm -D
 
 php artisan migrate --force
 php artisan db:seed --force
+php artisan permission:cache-reset
 php artisan storage:link --force
 
 cat > /etc/nginx/http.d/default.conf << EOF
