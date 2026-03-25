@@ -16,16 +16,20 @@ class AdminPanelMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && auth()->user()->hasRole('admin')) {
-            return $next($request);
+        if (!auth()->check()) {
+            return redirect('/login');
         }
 
-        Notification::make()
-            ->title('403 - Forbidden')
-            ->body('You do not have access to Admin panel.')
-            ->danger()
-            ->send();
+        if (!auth()->user()->hasRole('admin')) {
+            Notification::make()
+                ->title('403 - Forbidden')
+                ->body('You do not have access to Admin panel.')
+                ->danger()
+                ->send();
 
-        return redirect('/sales');
+            return redirect('/sales');
+        }
+
+        return $next($request);
     }
 }
