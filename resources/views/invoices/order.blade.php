@@ -23,6 +23,7 @@
             color: #1a1a1a;
             background: #fff;
             line-height: 1.5;
+            padding: 20px;
         }
 
         /* ── HEADER ── */
