@@ -32,6 +32,7 @@ class EditOrder extends EditRecord
                         ['Content-Type' => 'application/pdf']
                     );
                 }),
+            DeleteAction::make(),
         ];
     }
     protected function afterSave(): void

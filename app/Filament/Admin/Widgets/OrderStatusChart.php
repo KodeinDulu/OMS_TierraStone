@@ -11,7 +11,7 @@ class OrderStatusChart extends ChartWidget
 
     protected function getData(): array
     {
-        $statuses = ['pending', 'on_progress', 'ready_to_deliver', 'rejected'];
+        $statuses = ['pending', 'on_progress', 'ready_to_deliver'];
 
         $data = [];
         $labels = [];
@@ -23,7 +23,6 @@ class OrderStatusChart extends ChartWidget
                 'pending'           => 'Pending',
                 'on_progress'       => 'On Progress',
                 'ready_to_deliver'  => 'Ready to Deliver',
-                'rejected'          => 'Rejected',
             };
         }
 
@@ -35,7 +34,6 @@ class OrderStatusChart extends ChartWidget
                         '#f59e0b', // pending - amber
                         '#8b5cf6', // on_progress - purple
                         '#10b981', // ready_to_deliver - green
-                        '#ef4444', // rejected - red
                     ],
                 ],
             ],

@@ -9,7 +9,7 @@ class OrderItem extends Model
     protected $fillable = [
         'order_id',
         'stone_type_id',
-        'finishing',
+        'finishing_type_id',
         'width',
         'height',
         'thickness',
@@ -26,6 +26,11 @@ class OrderItem extends Model
     public function stoneType()
     {
         return $this->belongsTo(StoneType::class);
+    }
+
+    public function finishingType()
+    {
+        return $this->belongsTo(FinishingType::class);
     }
 
     public function getSizeAttribute(): string

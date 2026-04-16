@@ -28,7 +28,7 @@ class OrderForm
     private static function finishingOptions(): array
     {
         return FinishingType::where('is_available', true)
-            ->pluck('name', 'name')
+            ->pluck('name', 'id')
             ->toArray();
     }
 
@@ -163,13 +163,12 @@ class OrderForm
                                     ->live()
                                     ->columnSpanFull(),
 
-                                Select::make('finishing')
+                                Select::make('finishing_type_id')
                                     ->label('Finishing')
                                     ->options(fn() => self::finishingOptions())
                                     ->searchable()
                                     ->native(false)
                                     ->prefixIcon('heroicon-o-paint-brush')
-                                    ->createOptionUsing(fn(array $data): string => $data['finishing'])
                                     ->nullable()
                                     ->columnSpanFull(),
 

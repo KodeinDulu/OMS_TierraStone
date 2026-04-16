@@ -11,6 +11,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Filters\TernaryFilter;
+use Filament\Notifications\Notification;
 
 
 class FinishingTypesTable
@@ -27,11 +28,21 @@ class FinishingTypesTable
             ])
             ->recordActions([
                 EditAction::make(),
-                DeleteAction::make(),
+                DeleteAction::make()
+                ->before(function ($record, $action) {
+                            if ($record->orderItems()->exists()) {
+                                Notification::make()
+                                    ->title('Tidak bisa dihapus')
+                                    ->body('Jenis finishing ini sudah digunakan dalam pesanan.')
+                                    ->danger()
+                                    ->send();
+
+                                $action->halt();
+                            }
+                        }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

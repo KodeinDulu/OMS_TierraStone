@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained()->cascadeOnDelete();
             $table->foreignId('stone_type_id')->constrained('stone_types')->restrictOnDelete();
-            $table->string('finishing')->nullable();
+            $table->foreignId('finishing_type_id')->constrained('finishing_types')->restrictOnDelete()->nullable();
             $table->decimal('width', 10, 2);
             $table->decimal('height', 10, 2);
             $table->decimal('thickness', 10, 2);
