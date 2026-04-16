@@ -269,13 +269,6 @@
             document.getElementById('m-status-badge').innerHTML =
                 `<span class="badge ${st.cls}"><i class="fa-solid ${st.icon}" style="margin-right:4px"></i>${st.label}</span>`;
 
-            // Production status
-            // const prodSt = o.production_status;
-            // if (prodSt) {
-            //     const prodLabel = prodSt.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-            //     document.getElementById('m-status-badge').innerHTML +=
-            //         ` <span class="badge badge-production" style="margin-left:6px"><i class="fa-solid fa-wrench" style="margin-right:4px"></i>${prodLabel}</span>`;
-            // }
 
             // Catatan
             const noteWrap = document.getElementById('m-catatan-wrap');
@@ -287,22 +280,20 @@
             }
 
             // Items list (if multiple)
-            let itemsHtml = '';
-            if (o.items && o.items.length > 1) {
-                itemsHtml = `
-                <div style="margin-top:16px">
-                    <div class="tl-heading">Semua Item (${o.items.length})</div>
-                    <div style="display:flex; flex-direction:column; gap:8px">
-                        ${o.items.map((it, idx) => `
-                        <div style="padding:10px 12px; background:var(--card-bg, #fafaf8); border:1px solid var(--border, #e5e2dc); border-radius:8px; font-size:13px;">
-                            <strong>${idx+1}. ${it.stone}</strong>
-                            <span style="color:var(--muted, #888); margin-left:6px">${it.dimensi}</span>
-                            ${it.finishing !== '—' ? `<span style="color:var(--muted, #888); margin-left:6px">· ${it.finishing}</span>` : ''}
-                            <span style="float:right">${it.qty_sqm ? it.qty_sqm + ' m²' : it.qty_pcs + ' pcs'}</span>
-                        </div>`).join('')}
-                    </div>
-                </div>`;
-            }
+            const itemsHtml = o.items.map((it, idx) => `
+    <div style="padding:12px; background:var(--surface,#fafaf8); border:1px solid var(--border,#e5e2dc); border-radius:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px">
+            <strong style="font-size:14px">${idx + 1}. ${it.stone}</strong>
+            <span style="font-size:13px; font-weight:600">
+                ${(it.qty_sqm != null && it.qty_sqm > 0) ? it.qty_sqm + ' m²' : it.qty_pcs + ' pcs'}
+            </span>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+            ${it.dimensi !== '—' ? `<span style="font-size:12px; color:var(--muted,#888)">📐 ${it.dimensi}</span>` : ''}
+            ${it.finishing !== '—' ? `<span style="font-size:12px; color:var(--muted,#888)">✨ ${it.finishing}</span>` : ''}
+        </div>
+    </div>
+`).join('');
 
             // Timeline
             const timeline = buildTimeline(o.status);
