@@ -22,6 +22,7 @@ use App\Http\Middleware\AdminPanelMiddleware;
 use App\Filament\Admin\Resources\OrderResource;
 use App\Filament\Admin\Resources\UserResource;
 use App\Filament\Admin\Widgets\OrderStatusChart;
+use App\Filament\Admin\Widgets\OrderSummaryTable;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -50,6 +51,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\Filament\Admin\Widgets')
             ->widgets([
+                OrderSummaryTable::class,
                 AccountWidget::class,
                 OrderStatusChart::class,
             ])

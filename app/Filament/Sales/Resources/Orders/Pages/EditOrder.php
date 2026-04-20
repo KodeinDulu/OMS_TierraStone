@@ -40,5 +40,15 @@ class EditOrder extends EditRecord
     protected function afterSave(): void
     {
         $this->record->updateQuietly(['updated_by' => auth()->id()]);
+
+        $order = $this->record;
+
+        if ($order->wasChanged('status')) {
+            $order->updateQuietly([
+                'completed_at' => in_array($order->status, ['done', 'rejected'])
+                    ? now()
+                    : null,
+            ]);
+        }
     }
 }

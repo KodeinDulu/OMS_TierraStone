@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('customer_email')->nullable();
             $table->enum('status', ['pending', 'on_progress', 'ready_to_deliver', 'rejected', 'done'])->default('pending');
             $table->date('estimated_finish_date')->nullable();
+            $table->timestamp('completed_at')->nullable();
             $table->enum('production_status', [
                 'produksi',
                 'klasifikasi_besar',

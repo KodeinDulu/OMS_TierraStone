@@ -12,12 +12,13 @@ class Order extends Model
     protected $fillable = [
         'order_code', 'sales_id', 'customer_name',
         'customer_phone', 'customer_email', 'status', 'production_status', 'notes', 'freight', 'updated_by',
-        'reference_image', 'estimated_finish_date',
+        'reference_image', 'estimated_finish_date', 'completed_at',
     ];
 
     protected $casts = [
         'reference_image' => 'array',
         'estimated_finish_date' => 'date',
+        'completed_at' => 'datetime',
     ];
 
     public function sales() { return $this->belongsTo(User::class, 'sales_id'); }

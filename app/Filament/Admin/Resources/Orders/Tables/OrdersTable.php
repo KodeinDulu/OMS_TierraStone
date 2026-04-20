@@ -10,6 +10,7 @@ use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
+use Illuminate\Database\Eloquent\Builder;
 
 class OrdersTable
 {
@@ -56,6 +57,21 @@ class OrdersTable
                         'rejected'         => 'Rejected',
                         'done'             => 'Done',
                     ]),
+                SelectFilter::make('date_range')
+                    ->label('Rentang Waktu')
+                    ->options([
+                        'last_week'    => 'Last Week',
+                        'last_month'   => 'Last Month',
+                        'last_3_months' => 'Last 3 Months',
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        return match($data['value']) {
+                            'last_week'     => $query->where('created_at', '>=', now()->subWeek()),
+                            'last_month'    => $query->where('created_at', '>=', now()->subMonth()),
+                            'last_3_months' => $query->where('created_at', '>=', now()->subMonths(3)),
+                            default         => $query,
+                        };
+                    }),
             ])
             ->recordActions([
                 EditAction::make(),
