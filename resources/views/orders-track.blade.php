@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="{{ asset('css/order-track.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-
 </head>
 
 <body>
@@ -53,61 +52,74 @@
     <!-- MODAL -->
     <div id="modal-overlay" onclick="closeModalOutside(event)">
         <div id="modal-box">
-            <div class="modal-header">
-                <div>
-                    <div class="modal-label">Detail Pesanan</div>
-                    <h2 id="m-order-id" class="modal-title">—</h2>
+
+            <!-- TOPBAR -->
+            <div class="modal-topbar">
+                <div class="modal-breadcrumb">
+                    <button class="modal-back-btn" onclick="closeModal()"><i class="fa-solid fa-arrow-left"></i></button>
+                    <span class="modal-breadcrumb-text">Orders list <span class="modal-breadcrumb-sep">/</span> Details</span>
                 </div>
                 <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="m-divider"></div>
-            <div class="modal-body">
-                <div class="modal-status-row">
-                    <div id="m-status-badge"></div>
-                    <span id="m-date" class="modal-date"></span>
-                </div>
-                <div class="info-grid">
-                    <div class="info-tile">
-                        <div class="info-tile-label">Nama</div>
-                        <div class="info-tile-val" id="m-nama">—</div>
-                    </div>
-                    <div class="info-tile">
-                        <div class="info-tile-label">WhatsApp</div>
-                        <div class="info-tile-val" id="m-phone">—</div>
-                    </div>
-                    <div class="info-tile">
-                        <div class="info-tile-label">Produk</div>
-                        <div class="info-tile-val" id="m-produk">—</div>
-                    </div>
-                    <div class="info-tile">
-                        <div class="info-tile-label">Jumlah</div>
-                        <div class="info-tile-val" id="m-qty">—</div>
-                    </div>
-                    <div class="info-tile">
-                        <div class="info-tile-label">Lokasi Proyek</div>
-                        <div class="info-tile-val" id="m-kota">—</div>
-                    </div>
-                    <div class="info-tile">
-                        <div class="info-tile-label">Tipe Proyek</div>
-                        <div class="info-tile-val" id="m-tipe">—</div>
-                    </div>
-                </div>
-                <div id="m-catatan-wrap" class="modal-note" style="display:none">
-                    <div class="modal-note-label"><i class="fa-solid fa-note-sticky" style="margin-right:5px"></i>Catatan</div>
-                    <p id="m-catatan" class="modal-note-text"></p>
-                </div>
+
+            <!-- ORDER HEADER -->
+            <div class="modal-order-header">
                 <div>
-                    <div class="tl-heading">Riwayat Status</div>
-                    <div class="timeline" id="m-timeline"></div>
+                    <div class="modal-order-label">Nomor Pesanan</div>
+                    <h2 id="m-order-id" class="modal-order-id">—</h2>
+                    <p id="m-date" class="modal-order-date"></p>
                 </div>
+                <div id="m-status-badge"></div>
+            </div>
+
+            <div class="m-divider"></div>
+
+            <!-- BODY: 2 COLUMNS -->
+            <div class="modal-body">
+
+                <!-- LEFT -->
+                <div class="modal-left">
+
+                    <!-- CATATAN (opsional) -->
+                    <div id="m-catatan-wrap" class="modal-note" style="display:none">
+                        <i class="fa-solid fa-thumbtack modal-note-icon"></i>
+                        <div>
+                            <div class="modal-note-label">Catatan</div>
+                            <p id="m-catatan" class="modal-note-text"></p>
+                        </div>
+                    </div>
+
+                    <!-- ITEM CARDS -->
+                    <div class="modal-section">
+                        <div class="modal-section-title">Detail Produk</div>
+                        <div id="m-items-list"></div>
+                    </div>
+
+                    <!-- GLOBAL TIMELINE -->
+                    <div class="modal-timeline-section">
+                        <div class="modal-timeline-label">Status Pengerjaan</div>
+                        <div id="m-global-timeline"></div>
+                    </div>
+
+                </div>
+
+                <!-- RIGHT -->
+                <div class="modal-right">
+                    <div class="modal-section">
+                        <div class="modal-section-title">Customer</div>
+                        <div class="modal-customer-wrap">
+                            <div class="modal-customer-avatar" id="m-avatar">—</div>
+                            <div>
+                                <div class="modal-customer-name" id="m-nama">—</div>
+                                <div class="modal-customer-phone" id="m-phone">—</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
-
-    <!-- <footer>
-        <div class="footer-logo">TierraStone</div>
-        <div class="footer-copy">&copy; 2026 TierraStone. All rights reserved.</div>
-    </footer> -->
 
     <script>
         const STATUS_CONFIG = {
@@ -155,19 +167,18 @@
                 return;
             }
 
-            // Skeleton loading
             area.innerHTML = `
-            <div class="results-card" style="display:flex; flex-direction:column; gap:12px; padding:24px">
-                ${[1,2].map(() => `
-                <div style="display:flex; align-items:center; gap:14px">
-                    <div class="skeleton" style="width:42px; height:42px; flex-shrink:0"></div>
-                    <div style="flex:1; display:flex; flex-direction:column; gap:7px">
-                        <div class="skeleton" style="height:13px; width:38%"></div>
-                        <div class="skeleton" style="height:11px; width:55%"></div>
-                    </div>
-                    <div class="skeleton" style="height:24px; width:90px"></div>
-                </div>`).join('')}
-            </div>`;
+                <div class="results-card" style="display:flex;flex-direction:column;gap:10px;padding:20px">
+                    ${[1,2].map(() => `
+                    <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border:0.5px solid var(--border2);border-radius:10px;">
+                        <div class="skeleton" style="width:40px;height:40px;flex-shrink:0;border-radius:10px;"></div>
+                        <div style="flex:1;display:flex;flex-direction:column;gap:7px">
+                            <div class="skeleton" style="height:12px;width:38%;border-radius:4px;"></div>
+                            <div class="skeleton" style="height:10px;width:55%;border-radius:4px;"></div>
+                        </div>
+                        <div class="skeleton" style="height:26px;width:100px;border-radius:20px;"></div>
+                    </div>`).join('')}
+                </div>`;
 
             fetch(`{{ route('orders.track') }}?q=${encodeURIComponent(raw)}`)
                 .then(res => res.json())
@@ -192,7 +203,7 @@
                 <div class="empty-state">
                     <div class="empty-icon"><i class="fa-solid fa-box-open"></i></div>
                     <div class="empty-title">Pesanan tidak ditemukan</div>
-                    <div class="empty-desc">Pastikan nomor order atau nomor whatsapp sudah benar.</div>
+                    <div class="empty-desc">Pastikan nomor order atau nomor WhatsApp sudah benar.</div>
                 </div>`;
                 return;
             }
@@ -201,15 +212,15 @@
                 const st = STATUS_CONFIG[o.status] || STATUS_CONFIG.pending;
                 const qtyText = o.qty_sqm ? `${o.qty_sqm} m²` : `${o.qty_pcs} pcs`;
                 return `
-            <div class="order-row" onclick="openModal(${i})">
-                <div class="order-icon"><i class="fa-solid fa-box"></i></div>
-                <div class="order-info">
-                    <div class="order-id">${o.id}</div>
-                    <div class="order-meta">${o.produk} · ${qtyText}</div>
-                </div>
-                <span class="badge ${st.cls}"><i class="fa-solid ${st.icon}"></i>${st.label}</span>
-                <i class="fa-solid fa-chevron-right order-chevron"></i>
-            </div>`;
+                <div class="order-row" onclick="openModal(${i})">
+                    <div class="order-icon"><i class="fa-solid fa-gem"></i></div>
+                    <div class="order-info">
+                        <div class="order-id">${o.id}</div>
+                        <div class="order-meta">${o.produk} · ${qtyText}</div>
+                    </div>
+                    <span class="badge ${st.cls}"><span class="badge-dot"></span>${st.label}</span>
+                    <i class="fa-solid fa-chevron-right order-chevron"></i>
+                </div>`;
             }).join('');
 
             area.innerHTML = `
@@ -219,28 +230,64 @@
             </div>`;
         }
 
-        function buildTimeline(status) {
+        function buildTimelineHtml(status) {
             const currentIdx = STATUS_FLOW.indexOf(status);
-            // Rejected — special case
-            if (status === 'rejected') {
-                return STATUS_FLOW.map((s, i) => {
-                    if (i === 0) return {
-                        label: STATUS_CONFIG[s].label,
-                        done: true,
-                        active: false
-                    };
+            const isRejected = status === 'rejected';
+
+            const steps = STATUS_FLOW.map((s, i) => {
+                if (isRejected) {
                     return {
                         label: s === 'done' ? 'Rejected' : STATUS_CONFIG[s].label,
-                        done: false,
-                        active: s === 'done'
+                        done: i === 0,
+                        active: false,
+                        reject: s === 'done',
                     };
-                });
-            }
-            return STATUS_FLOW.map((s, i) => ({
-                label: STATUS_CONFIG[s].label,
-                done: i <= currentIdx,
-                active: i === currentIdx,
-            }));
+                }
+                return {
+                    label: STATUS_CONFIG[s].label,
+                    done: i < currentIdx,
+                    active: i === currentIdx,
+                    reject: false,
+                };
+            });
+
+            const stepsHtml = steps.map((t, i) => {
+                let dotCls = '';
+                let labelCls = 'dim';
+                if (t.reject) {
+                    dotCls = 'reject';
+                    labelCls = '';
+                } else if (t.done) {
+                    dotCls = 'done';
+                    labelCls = 'done-lbl';
+                } else if (t.active) {
+                    dotCls = 'active';
+                    labelCls = 'active';
+                }
+
+                const icon = t.done ? '<i class="fa-solid fa-check"></i>' :
+                    t.reject ? '<i class="fa-solid fa-xmark"></i>' :
+                    t.active ? '<i class="fa-solid fa-circle" style="font-size:7px"></i>' :
+                    '';
+
+                const lineActive = i < steps.length - 1 && (steps[i + 1].done || steps[i + 1].active);
+                const lineCls = i < steps.length - 1 ?
+                    `itl-line ${steps[i].done ? 'done' : steps[i].active ? 'active' : ''}` :
+                    '';
+
+                return `
+                <div class="itl-step">
+                    <div class="itl-dot ${dotCls}">${icon}</div>
+                    <span class="itl-label ${labelCls}">${t.label}</span>
+                </div>
+                ${i < steps.length - 1 ? `<div class="${lineCls}"></div>` : ''}`;
+            }).join('');
+
+            return `<div class="item-timeline">${stepsHtml}</div>`;
+        }
+
+        function getInitial(name) {
+            return (name || '?').trim().charAt(0).toUpperCase();
         }
 
         function openModal(index) {
@@ -249,63 +296,48 @@
             const st = STATUS_CONFIG[o.status] || STATUS_CONFIG.pending;
 
             document.getElementById('m-order-id').textContent = o.id;
-            document.getElementById('m-date').textContent = o.tanggal;
+            document.getElementById('m-date').textContent = 'Dibuat ' + o.tanggal;
             document.getElementById('m-nama').textContent = o.nama;
             document.getElementById('m-phone').textContent = o.phone;
-            document.getElementById('m-produk').textContent = o.produk;
-
-            // Qty display
-            const qtyText = o.qty_sqm ? `${o.qty_sqm} m²` : `${o.qty_pcs} pcs`;
-            document.getElementById('m-qty').textContent = qtyText;
-
-            // Dimensi & finishing di tile yang tersedia
-            document.getElementById('m-kota').textContent = o.dimensi;
-            document.getElementById('m-tipe').textContent = o.finishing;
-
-            // Update tile labels to match data
-            document.querySelector('#m-kota').closest('.info-tile').querySelector('.info-tile-label').textContent = 'Dimensi';
-            document.querySelector('#m-tipe').closest('.info-tile').querySelector('.info-tile-label').textContent = 'Finishing';
+            document.getElementById('m-avatar').textContent = getInitial(o.nama);
 
             document.getElementById('m-status-badge').innerHTML =
-                `<span class="badge ${st.cls}"><i class="fa-solid ${st.icon}" style="margin-right:4px"></i>${st.label}</span>`;
-
+                `<span class="badge ${st.cls}"><span class="badge-dot"></span>${st.label}</span>`;
 
             // Catatan
             const noteWrap = document.getElementById('m-catatan-wrap');
             if (o.catatan) {
-                noteWrap.style.display = 'block';
+                noteWrap.style.display = 'flex';
                 document.getElementById('m-catatan').textContent = o.catatan;
             } else {
                 noteWrap.style.display = 'none';
             }
 
-            // Items list (if multiple)
-            const itemsHtml = o.items.map((it, idx) => `
-    <div style="padding:12px; background:var(--surface,#fafaf8); border:1px solid var(--border,#e5e2dc); border-radius:10px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px">
-            <strong style="font-size:14px">${idx + 1}. ${it.stone}</strong>
-            <span style="font-size:13px; font-weight:600">
-                ${(it.qty_sqm != null && it.qty_sqm > 0) ? it.qty_sqm + ' m²' : it.qty_pcs + ' pcs'}
-            </span>
-        </div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap">
-            ${it.dimensi !== '—' ? `<span style="font-size:12px; color:var(--muted,#888)">📐 ${it.dimensi}</span>` : ''}
-            ${it.finishing !== '—' ? `<span style="font-size:12px; color:var(--muted,#888)">✨ ${it.finishing}</span>` : ''}
-        </div>
-    </div>
-`).join('');
+            // Item cards
+            document.getElementById('m-items-list').innerHTML = o.items.map(it => {
+                const qtyVal = (it.qty_sqm != null && it.qty_sqm > 0) ? it.qty_sqm : it.qty_pcs;
+                const qtyUnit = (it.qty_sqm != null && it.qty_sqm > 0) ? 'm²' : 'pcs';
+                const metaParts = [];
+                if (it.dimensi && it.dimensi !== '—') metaParts.push(`<span><i class="fa-solid fa-ruler-combined"></i> ${it.dimensi}</span>`);
+                if (it.finishing && it.finishing !== '—') metaParts.push(`<span><i class="fa-solid fa-wand-magic-sparkles"></i> ${it.finishing}</span>`);
 
-            // Timeline
-            const timeline = buildTimeline(o.status);
-            document.getElementById('m-timeline').innerHTML =
-                timeline.map(t => `
-                <div class="tl-item">
-                    <div class="tl-dot ${t.done ? 'done' : t.active ? 'active' : ''}">
-                        ${t.done ? '<i class="fa-solid fa-check"></i>' : ''}
+                return `
+                <div class="item-card">
+                    <div class="item-card-header">
+                        <div class="item-card-icon"><i class="fa-solid fa-gem"></i></div>
+                        <div class="item-card-info">
+                            <div class="item-card-name">${it.stone}</div>
+                            ${metaParts.length ? `<div class="item-card-meta">${metaParts.join('')}</div>` : ''}
+                        </div>
+                        <div class="item-card-qty-wrap">
+                            <div class="item-card-qty">${qtyVal}</div>
+                            <div class="item-card-qty-unit">${qtyUnit}</div>
+                        </div>
                     </div>
-                    <p class="tl-label ${!t.done && !t.active ? 'dim' : ''}">${t.label}</p>
-                    <p class="tl-time ${!t.done && !t.active ? 'dim-time' : ''}">${t.done ? '✓' : '—'}</p>
-                </div>`).join('') + itemsHtml;
+                </div>`;
+            }).join('');
+
+            document.getElementById('m-global-timeline').innerHTML = buildTimelineHtml(o.status);
 
             document.getElementById('modal-overlay').classList.add('open');
             document.body.style.overflow = 'hidden';
