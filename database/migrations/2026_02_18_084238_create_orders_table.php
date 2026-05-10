@@ -17,16 +17,16 @@ return new class extends Migration
             $table->foreignId('sales_id')->constrained('users')->restrictOnDelete();;
             $table->string('customer_name');
             $table->string('customer_phone')->nullable();
-            $table->string('customer_email')->nullable();
-            $table->enum('status', ['pending', 'on_progress', 'ready_to_deliver', 'rejected', 'done'])->default('pending');
+            $table->string('customer_address')->nullable();
+            $table->enum('status', ['indent', 'on_progress', 'ready_to_deliver', 'on_delivery', 'rejected', 'done'])->default('indent');
             $table->date('estimated_finish_date')->nullable();
             $table->timestamp('completed_at')->nullable();
             $table->enum('production_status', [
-                'produksi',
                 'klasifikasi_besar',
                 'klasifikasi_sedang',
                 'klasifikasi_kecil',
                 'finishing',
+                'done',
             ])->nullable();
             $table->text('notes')->nullable();
             $table->json('reference_image')->nullable();

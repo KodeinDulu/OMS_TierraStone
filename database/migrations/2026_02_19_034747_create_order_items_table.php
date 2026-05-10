@@ -20,7 +20,7 @@ return new class extends Migration
             $table->decimal('height', 10, 2);
             $table->decimal('thickness', 10, 2);
             $table->unsignedInteger('quantity_pcs');
-            $table->decimal('quantity_sqm', 10, 2);
+            $table->decimal('quantity_sqm', 10, 2)->nullable();
             $table->unsignedInteger('unit_price')->nullable();
             $table->timestamps();
         });
