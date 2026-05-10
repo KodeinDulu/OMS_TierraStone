@@ -26,9 +26,104 @@
             --green: #27ae60;
         }
 
+        /* ── Override: min font 12px everywhere ──────────────── */
+        * {
+            font-size: max(12px, inherit);
+        }
+
+        body {
+            font-size: 14px;
+        }
+
+        /* ══ Align ALL containers to 1100px ══════════════════ */
+        .nav-inner,
+        .page-header,
+        .progress-wrap,
+        .main,
+        .trust-row,
+        footer {
+            max-width: 1100px !important;
+            padding-left: 32px;
+            padding-right: 32px;
+        }
+
+        .form-card {
+            max-width: 100% !important;
+        }
+
+        /* ── Nav refinements ──────────────────────────────────── */
+        .nav {
+            background: rgba(255,255,255,.98) !important;
+            border-bottom: 1px solid #e8e5e0 !important;
+        }
+
+        .nav-inner {
+            height: 60px !important;
+        }
+
+        .nav-logo {
+            font-size: 20px !important;
+            letter-spacing: .03em !important;
+        }
+
+        .nav-back {
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+            font-size: 11px !important;
+            letter-spacing: .14em !important;
+            font-weight: 500 !important;
+            color: #999 !important;
+            text-decoration: none !important;
+            text-transform: uppercase !important;
+            transition: color .2s !important;
+            padding: 8px 16px !important;
+            border: 1px solid #e0ddd8 !important;
+        }
+
+        .nav-back:hover {
+            color: #111 !important;
+            border-color: #111 !important;
+            background: transparent !important;
+        }
+
+        /* ── Page header refinements ──────────────────────────── */
+        .page-header {
+            padding-top: 52px !important;
+            padding-bottom: 28px !important;
+        }
+
+        .page-header p {
+            max-width: 560px !important;
+        }
+
+        /* ── Progress wrap ────────────────────────────────────── */
+        .progress-wrap {
+            padding-bottom: 28px !important;
+        }
+
+        /* ── Trust row ────────────────────────────────────────── */
+        .trust-row {
+            justify-content: flex-start !important;
+            gap: 32px !important;
+            padding-top: 24px !important;
+            padding-bottom: 0 !important;
+        }
+
+        /* ── Footer refinements ───────────────────────────────── */
+        footer {
+            margin-top: 32px !important;
+            padding-top: 22px !important;
+            padding-bottom: 28px !important;
+            border-top: 1px solid #e8e5e0 !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+        }
+
         /* ── Layout helpers ──────────────────────────────────── */
         .form-body {
-            padding: 24px;
+            padding: 24px 32px;
         }
 
         .field {
@@ -39,21 +134,34 @@
             margin-bottom: 0;
         }
 
-        /* ── Dimension grid: 4 columns (p, l, tebal, luas) ───── */
-        .grid-4 {
+        /* ── Two-column layout for contact section ───────────── */
+        .grid-contact {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .grid-contact {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ── Dimension grid: 3 columns (p, l, tebal) + luas ─── */
+        .grid-dim {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr) 1.2fr;
             gap: 10px;
         }
 
         @media (max-width: 600px) {
-            .grid-4 {
+            .grid-dim {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
 
         .input-hint {
-            font-size: 11px;
+            font-size: 12px;
             color: var(--muted);
             margin-top: 4px;
             text-align: center;
@@ -115,7 +223,7 @@
             border-radius: 50%;
             background: var(--accent-primary, #8B7355);
             color: #fff;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 600;
             display: flex;
             align-items: center;
@@ -210,7 +318,7 @@
         .item-form-panel {
             border: 1px solid #e0ddd8;
             border-radius: 8px;
-            padding: 20px;
+            padding: 20px 24px;
             margin-bottom: 16px;
             background: #faf8f5;
             animation: fadeSlideIn .22s ease;
@@ -268,6 +376,64 @@
             opacity: .85;
         }
 
+        /* ── Image upload area ──────────────────────────────── */
+        .img-upload-area {
+            border: 1.5px dashed #c8c2b8;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #fff;
+            cursor: pointer;
+            transition: border-color .2s, background .2s;
+            min-height: 100px;
+            text-align: center;
+        }
+
+        .img-upload-area:hover {
+            border-color: var(--accent-primary);
+            background: #faf8f5;
+        }
+
+        .img-upload-area i {
+            font-size: 22px;
+            color: var(--subtle);
+        }
+
+        .img-upload-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        .img-upload-sub {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .img-upload-area input[type="file"] {
+            display: none;
+        }
+
+        /* Preview strip */
+        .img-preview-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .img-preview-strip img {
+            width: 64px;
+            height: 64px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+        }
+
         /* ── Summary items ──────────────────────────────────── */
         .summary-items-list {
             display: flex;
@@ -293,7 +459,7 @@
             border-radius: 50%;
             background: var(--accent-primary, #8B7355);
             color: #fff;
-            font-size: 10px;
+            font-size: 12px;
             font-weight: 600;
             display: flex;
             align-items: center;
@@ -320,13 +486,24 @@
             margin: 24px 0;
         }
 
-        /* ── Section head spacing ────────────────────────────── */
+        /* ── Section head ────────────────────────────────────── */
         .section-head {
-            padding: 24px 24px 0;
+            padding: 24px 32px 0;
         }
 
         .section-head+.form-body {
             padding-top: 16px;
+        }
+
+        .step1-col-left .section-head,
+        .step1-col-right .section-head {
+            padding: 24px 20px 0;
+        }
+
+        .step1-col-left .form-body,
+        .step1-col-right .form-body {
+            padding-left: 20px;
+            padding-right: 20px;
         }
 
         /* ── Items section padding ───────────────────────────── */
@@ -334,11 +511,102 @@
             padding: 0 24px 24px;
         }
 
+        .step1-col-right .items-section {
+            padding: 0 20px 24px;
+        }
+
+        /* ── Two-column main layout for step 1 ──────────────── */
+        .step1-cols {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            align-items: start;
+        }
+
+        .step1-col-left {
+            border-right: 1px solid var(--border);
+            min-width: 0;
+        }
+
+        .step1-col-right {
+            min-width: 0;
+        }
+
+        .step1-contact {
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 720px) {
+            .step1-cols {
+                grid-template-columns: 1fr;
+            }
+
+            .step1-col-left {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+        }
+
         /* ── label-opt ───────────────────────────────────────── */
         .label-opt {
-            font-size: 11px;
+            font-size: 12px;
             color: var(--subtle);
             font-weight: 400;
+        }
+
+        /* ── Labels baseline ─────────────────────────────────── */
+        .label {
+            font-size: 13px;
+        }
+
+        /* ── Ensure all inputs/selects/textareas min 12px ────── */
+        .input,
+        select.input,
+        textarea.input {
+            font-size: 13px !important;
+        }
+
+        .chip {
+            font-size: 12px;
+        }
+
+        .section-label {
+            font-size: 12px;
+        }
+
+        /* ── Product card: putih default, coklat saat dipilih ── */
+        .prod-card {
+            background: #ffffff !important;
+        }
+
+        .prod-name {
+            color: #111111 !important;
+        }
+
+        .prod-sub {
+            color: #999999 !important;
+        }
+
+        .prod-img {
+            background: #f5f5f3 !important;
+        }
+
+        .prod-check {
+            background: #8B7355 !important;
+        }
+
+        .prod-card.selected {
+            background: #8B7355 !important;
+            border-color: #8B7355 !important;
+            box-shadow: 0 0 0 2px #8B7355, 0 8px 24px rgba(0,0,0,.08) !important;
+        }
+
+        .prod-card.selected .prod-name {
+            color: #ffffff !important;
+        }
+
+        .prod-card.selected .prod-sub {
+            color: rgba(255,255,255,.65) !important;
         }
     </style>
 </head>
@@ -387,201 +655,227 @@
             <!-- ═══ STEP 1 ═══ -->
             <div class="form-step active" id="step-1">
 
-                <!-- 01 — Pilih Material -->
-                <div class="section-head">
-                    <div class="section-label">01 — Jenis Batu</div>
-                    <div class="section-title">Pilih Material</div>
-                    <div class="section-desc">Pilih dari kartu atau cari via dropdown untuk pilihan lengkap.</div>
-                </div>
+                <!-- ── TWO-COLUMN ROW: material kiri, item kanan ── -->
+                <div class="step1-cols">
 
-                <div class="form-body" style="padding-bottom: 0">
-                    <div class="product-grid" id="product-list">
-                        @forelse($stoneTypes as $stone)
-                        <div class="prod-card" data-product="{{ $stone->name }}" onclick="selectProduct(this)">
-                            <div class="prod-check"><i class="fa-solid fa-check"></i></div>
-                            <div class="prod-img">
-                                <img src="{{ $stone->reference_image ? asset('storage/' . $stone->reference_image) : asset('images/stone-default.png') }}" alt="{{ $stone->name }}">
-                            </div>
-                            <div class="prod-info">
-                                <div class="prod-name">{{ $stone->name }}</div>
-                                <div class="prod-sub">{{ $stone->description ?? 'Batu alam' }}</div>
-                            </div>
+                    <!-- ══ LEFT: Pilih Material ══ -->
+                    <div class="step1-col-left">
+                        <div class="section-head">
+                            <div class="section-label">01 — Jenis Batu</div>
+                            <div class="section-title">Pilih Material</div>
+                            <div class="section-desc">Pilih dari kartu atau cari via dropdown untuk pilihan lengkap.</div>
                         </div>
-                        @empty
-                        <div style="grid-column: 1 / -1; text-align: center; padding: 32px 0; color: var(--muted);">
-                            <i class="fa-solid fa-cube" style="font-size: 24px; opacity: 0.3; display: block; margin-bottom: 8px;"></i>
-                            Belum ada jenis batu tersedia. Gunakan dropdown "Lainnya" di bawah.
-                        </div>
-                        @endforelse
-                    </div>
-                </div>
 
-                <div class="form-body" style="padding-top: 12px; padding-bottom: 0;">
-                    <div class="field" style="margin-bottom: 0;">
-                        <div class="sel-wrap">
-                            <select id="jenis-batu" class="input" onchange="syncProductFromDropdown(this.value)">
-                                <option value="">Pilih dari daftar lengkap...</option>
+                        <div class="form-body" style="padding-bottom: 0">
+                            <div class="product-grid" id="product-list">
                                 @forelse($stoneTypes as $stone)
-                                <option value="{{ $stone->name }}">{{ $stone->name }}</option>
+                                <div class="prod-card" data-product="{{ $stone->name }}" onclick="selectProduct(this)">
+                                    <div class="prod-check"><i class="fa-solid fa-check"></i></div>
+                                    <div class="prod-img">
+                                        <img src="{{ $stone->reference_image ? asset('storage/' . $stone->reference_image) : asset('images/stone-default.png') }}" alt="{{ $stone->name }}">
+                                    </div>
+                                    <div class="prod-info">
+                                        <div class="prod-name">{{ $stone->name }}</div>
+                                        <div class="prod-sub">{{ $stone->description ?? 'Batu alam' }}</div>
+                                    </div>
+                                </div>
                                 @empty
-                                <option value="" disabled>— Tidak ada data —</option>
+                                <div style="grid-column: 1 / -1; text-align: center; padding: 32px 0; color: var(--muted);">
+                                    <i class="fa-solid fa-cube" style="font-size: 24px; opacity: 0.3; display: block; margin-bottom: 8px;"></i>
+                                    Belum ada jenis batu tersedia.
+                                </div>
                                 @endforelse
-                                <option value="Lainnya">Lainnya...</option>
-                            </select>
+                            </div>
                         </div>
-                        <div id="jenis-custom-wrap" style="display:none; margin-top:10px">
-                            <input type="text" id="jenis-custom" class="input" placeholder="Tulis jenis batu yang Anda inginkan...">
+
+                        <div class="form-body" style="padding-top: 12px; padding-bottom: 28px;">
+                            <div class="field" style="margin-bottom: 0;">
+                                <div class="sel-wrap">
+                                    <select id="jenis-batu" class="input" onchange="syncProductFromDropdown(this.value)">
+                                        <option value="">Pilih dari daftar lengkap...</option>
+                                        @forelse($stoneTypes as $stone)
+                                        <option value="{{ $stone->name }}">{{ $stone->name }}</option>
+                                        @empty
+                                        <option value="" disabled>— Tidak ada data —</option>
+                                        @endforelse
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                    <!-- end left col -->
 
-                <!-- ── Item list ── -->
-                <div class="items-section" style="margin-top: 0;">
-                    <hr class="divider" style="margin: 20px 0 16px;">
+                    <!-- ══ RIGHT: Daftar Item ══ -->
+                    <div class="step1-col-right">
+                        <div class="section-head">
+                            <div class="section-label">02 — Item Pesanan</div>
+                            <div class="section-title">Detail Item</div>
+                            <div class="section-desc">Tentukan jumlah, dimensi, dan finishing tiap batu.</div>
+                        </div>
 
-                    <div class="section-label" style="margin-bottom: 12px;">Daftar Item Pesanan</div>
+                        <!-- ── Item list ── -->
+                        <div class="items-section" style="margin-top: 16px;">
 
-                    <div class="items-list" id="items-list">
-                        <!-- rendered by JS -->
-                    </div>
+                            <div class="items-list" id="items-list">
+                                <!-- rendered by JS -->
+                            </div>
 
-                    <!-- Item form panel -->
-                    <div id="item-form-panel" class="item-form-panel" style="display:none">
-                        <div class="item-form-header">
-                            <div class="item-form-title" id="item-form-title">Tambah Item</div>
-                            <button class="btn-cancel-item" onclick="cancelItemForm()" title="Batal">
-                                <i class="fa-solid fa-xmark"></i>
+                            <!-- Item form panel -->
+                            <div id="item-form-panel" class="item-form-panel" style="display:none">
+                                <div class="item-form-header">
+                                    <div class="item-form-title" id="item-form-title">Tambah Item</div>
+                                    <button class="btn-cancel-item" onclick="cancelItemForm()" title="Batal">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
+
+                                <input type="hidden" id="edit-item-idx" value="">
+
+                                <!-- Jumlah Batu + Finishing side by side -->
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                                    <!-- Jumlah Batu -->
+                                    <div class="field">
+                                        <label class="label" style="font-size:13px">Jumlah Batu <span class="req">*</span></label>
+                                        <div class="qty-row">
+                                            <input type="number" id="qty" class="input" placeholder="1" min="1" value="1" style="max-width:120px">
+                                            <span class="qty-unit">lembar / buah</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Finishing -->
+                                    <div class="field">
+                                        <label class="label" style="font-size:13px">Finishing <span class="label-opt">(opsional)</span></label>
+                                        <div class="chips">
+                                            @forelse($finishingTypes as $fin)
+                                            <span class="chip" onclick="selectChip(this)" data-val="{{ $fin->name }}">{{ $fin->name }}</span>
+                                            @empty
+                                            <span style="font-size: 13px; color: var(--muted);">Belum ada pilihan finishing.</span>
+                                            @endforelse
+                                        </div>
+                                        <input type="hidden" id="finishing" value="">
+                                    </div>
+                                </div>
+
+                                <!-- Dimensi: Panjang, Lebar, Tebal, Luas -->
+                                <div class="field">
+                                    <label class="label" style="font-size:13px">Dimensi <span class="req">*</span></label>
+                                    <div class="grid-dim">
+                                        <div>
+                                            <input type="number" id="length" class="input" placeholder="100" min="1">
+                                            <div class="input-hint">Panjang (cm)</div>
+                                        </div>
+                                        <div>
+                                            <input type="number" id="width" class="input" placeholder="60" min="1">
+                                            <div class="input-hint">Lebar (cm)</div>
+                                        </div>
+                                        <div>
+                                            <input type="number" id="thickness" class="input" placeholder="1.2" min="0" step="0.1">
+                                            <div class="input-hint">Tebal (cm)</div>
+                                        </div>
+                                        <div>
+                                            <input type="number" id="luas" class="input" placeholder="0.06" min="0" step="0.0001">
+                                            <div class="input-hint">Luas (m²) <span class="label-opt">(opsional)</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Gambar Referensi -->
+                                <div class="field">
+                                    <label class="label" style="font-size:13px">Gambar Referensi <span class="label-opt">(opsional)</span></label>
+                                    <label class="img-upload-area" id="img-upload-label" for="item-images">
+                                        <i class="fa-regular fa-image"></i>
+                                        <div class="img-upload-label">Klik untuk unggah gambar</div>
+                                        <div class="img-upload-sub">JPG, PNG, WEBP — maks. 5MB per file</div>
+                                        <input type="file" id="item-images" accept="image/*" multiple onchange="previewImages(this)">
+                                    </label>
+                                    <div class="img-preview-strip" id="img-preview-strip"></div>
+                                </div>
+
+                                <!-- Catatan Item -->
+                                <div class="field" style="margin-bottom:0">
+                                    <label class="label" style="font-size:13px">Catatan Item <span class="label-opt">(opsional)</span></label>
+                                    <input type="text" id="item-catatan" class="input"
+                                        placeholder="Warna, motif, atau keterangan khusus item ini...">
+                                </div>
+
+                                <div class="error-box shake" id="item-error">
+                                    <i class="fa-solid fa-circle-exclamation"></i>
+                                    <span id="item-err-msg"></span>
+                                </div>
+
+                                <button class="btn-save-item" onclick="saveItem()" type="button">
+                                    <i class="fa-solid fa-check" style="font-size:12px"></i> Simpan Item
+                                </button>
+                            </div>
+
+                            <button class="btn-add-item" id="btn-add-item" onclick="openItemForm()" type="button">
+                                <i class="fa-solid fa-plus" style="font-size:12px"></i> Tambah Item Batu
                             </button>
                         </div>
+                        <!-- ── END Item list ── -->
 
-                        <input type="hidden" id="edit-item-idx" value="">
+                    </div><!-- end step1-col-right -->
+                </div><!-- end step1-cols -->
 
-                        <!-- Jumlah Batu -->
+                <!-- ── Data Pemesan: full width below ── -->
+                <div class="step1-contact">
+
+                    <div style="padding: 0 32px;">
+                        <hr class="divider" style="margin: 24px 0 0;">
+                    </div>
+
+                    <div class="section-head" style="padding-bottom: 16px;">
+                        <div class="section-label">03 — Data Pemesan</div>
+                        <div class="section-title">Informasi Kontak</div>
+                    </div>
+
+                    <div class="form-body" style="padding-top: 0;">
+                        <!-- Nama + WA + Alamat: three columns -->
+                        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:18px;">
+                            <div class="field" style="margin-bottom:0">
+                                <label class="label">Nama Lengkap <span class="req">*</span></label>
+                                <input type="text" id="nama" class="input" placeholder="Nama lengkap Anda" autocomplete="name">
+                            </div>
+                            <div class="field" style="margin-bottom:0">
+                                <label class="label">No. WhatsApp <span class="req">*</span></label>
+                                <div class="phone-wrap">
+                                    <div class="phone-prefix">+62</div>
+                                    <input type="number" id="phone" class="input" placeholder="81234567890" autocomplete="tel">
+                                </div>
+                            </div>
+                            <div class="field" style="margin-bottom:0">
+                                <label class="label">Alamat <span class="req">*</span></label>
+                                <input type="text" id="alamat" class="input" placeholder="Jl. Contoh No. 1, Kota..." autocomplete="street-address">
+                            </div>
+                        </div>
+
+                        @media (max-width: 720px) {
+                            .grid-three { grid-template-columns: 1fr !important; }
+                        }
+
+                        <!-- Catatan Umum -->
                         <div class="field">
-                            <label class="label" style="font-size:12px">Jumlah Batu <span class="req">*</span></label>
-                            <div class="qty-row">
-                                <input type="number" id="qty" class="input" placeholder="1" min="1" value="1" style="max-width:120px">
-                                <span class="qty-unit">lembar / buah</span>
-                            </div>
+                            <label class="label">Catatan Umum <span class="label-opt">(opsional)</span></label>
+                            <textarea id="catatan" class="input" rows="3"
+                                placeholder="Lokasi proyek, instruksi pengiriman, atau informasi lainnya..."
+                                style="resize:vertical; min-height:80px; line-height:1.6"></textarea>
                         </div>
 
-                        <!-- Dimensi: Panjang, Lebar, Tebal, Luas (luas opsional) -->
-                        <div class="field">
-                            <label class="label" style="font-size:12px">Dimensi <span class="req">*</span></label>
-                            <div class="grid-4">
-                                <div>
-                                    <input type="number" id="length" class="input" placeholder="100" min="1">
-                                    <div class="input-hint">Panjang</div>
-                                </div>
-                                <div>
-                                    <input type="number" id="width" class="input" placeholder="60" min="1">
-                                    <div class="input-hint">Lebar</div>
-                                </div>
-                                <div>
-                                    <input type="number" id="thickness" class="input" placeholder="1.2" min="0" step="0.1">
-                                    <div class="input-hint">Tebal</div>
-                                </div>
-                                <div>
-                                    <input type="number" id="luas" class="input" placeholder="0.06" min="0" step="0.0001">
-                                    <div class="input-hint">Luas (m²) <span class="label-opt">(opsional)</span></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Finishing -->
-                        <div class="field">
-                            <label class="label" style="font-size:12px">Finishing <span class="label-opt">(opsional)</span></label>
-                            <div class="chips">
-                                @forelse($finishingTypes as $fin)
-                                <span class="chip" onclick="selectChip(this)" data-val="{{ $fin->name }}">{{ $fin->name }}</span>
-                                @empty
-                                <span style="font-size: 13px; color: var(--muted);">Belum ada pilihan finishing.</span>
-                                @endforelse
-                                <span class="chip" id="chip-custom-toggle" onclick="selectChip(this)" data-val="__custom__">+ Lainnya</span>
-                            </div>
-                            <div class="chip-custom-input" id="finishing-custom-wrap">
-                                <input type="text" id="finishing-custom" class="input" placeholder="Tulis jenis finishing...">
-                            </div>
-                            <input type="hidden" id="finishing" value="">
-                        </div>
-
-                        <!-- Catatan Item -->
-                        <div class="field" style="margin-bottom:0">
-                            <label class="label" style="font-size:12px">Catatan Item <span class="label-opt">(opsional)</span></label>
-                            <input type="text" id="item-catatan" class="input"
-                                placeholder="Warna, motif, atau keterangan khusus item ini...">
-                        </div>
-
-                        <div class="error-box shake" id="item-error">
+                        <div class="error-box shake" id="step1-error">
                             <i class="fa-solid fa-circle-exclamation"></i>
-                            <span id="item-err-msg"></span>
+                            <span id="s1-msg"></span>
                         </div>
 
-                        <button class="btn-save-item" onclick="saveItem()" type="button">
-                            <i class="fa-solid fa-check" style="font-size:11px"></i> Simpan Item
-                        </button>
-                    </div>
-
-                    <button class="btn-add-item" id="btn-add-item" onclick="openItemForm()" type="button">
-                        <i class="fa-solid fa-plus" style="font-size:11px"></i> Tambah Item Batu
-                    </button>
-                </div>
-                <!-- ── END Item list ── -->
-
-                <!-- 02 — Data Pemesan -->
-                <div style="padding: 0 24px;">
-                    <hr class="divider" style="margin: 4px 0 24px;">
-                </div>
-
-                <div class="section-head" style="padding-bottom: 16px;">
-                    <div class="section-label">02 — Data Pemesan</div>
-                    <div class="section-title">Informasi Kontak</div>
-                </div>
-
-                <div class="form-body" style="padding-top: 0;">
-                    <!-- Nama -->
-                    <div class="field">
-                        <label class="label">Nama Lengkap <span class="req">*</span></label>
-                        <input type="text" id="nama" class="input" placeholder="Nama lengkap Anda" autocomplete="name">
-                    </div>
-
-                    <!-- WA + Email -->
-                    <div class="grid-2">
-                        <div class="field">
-                            <label class="label">No. WhatsApp <span class="req">*</span></label>
-                            <div class="phone-wrap">
-                                <div class="phone-prefix">+62</div>
-                                <input type="number" id="phone" class="input" placeholder="81234567890" autocomplete="tel">
-                            </div>
+                        <div class="btn-row">
+                            <span style="font-size:12px; color:var(--subtle)">
+                                <span style="color:var(--red)">*</span> Wajib diisi
+                            </span>
+                            <button class="btn-primary" onclick="goStep2()" type="button">
+                                Review Pesanan <i class="fa-solid fa-arrow-right" style="font-size:12px"></i>
+                            </button>
                         </div>
-                        <div class="field">
-                            <label class="label">Email <span class="label-opt">(opsional)</span></label>
-                            <input type="email" id="email" class="input" placeholder="email@domain.com" autocomplete="email">
-                        </div>
-                    </div>
-
-                    <!-- Catatan Umum -->
-                    <div class="field">
-                        <label class="label">Catatan Umum <span class="label-opt">(opsional)</span></label>
-                        <textarea id="catatan" class="input" rows="3"
-                            placeholder="Lokasi proyek, instruksi pengiriman, atau informasi lainnya..."
-                            style="resize:vertical; min-height:80px; line-height:1.6"></textarea>
-                    </div>
-
-                    <div class="error-box shake" id="step1-error">
-                        <i class="fa-solid fa-circle-exclamation"></i>
-                        <span id="s1-msg"></span>
-                    </div>
-
-                    <div class="btn-row">
-                        <span style="font-size:12px; color:var(--subtle)">
-                            <span style="color:var(--red)">*</span> Wajib diisi
-                        </span>
-                        <button class="btn-primary" onclick="goStep2()" type="button">
-                            Review Pesanan <i class="fa-solid fa-arrow-right" style="font-size:10px"></i>
-                        </button>
-                    </div>
-                </div>
+                    </div><!-- end form-body contact -->
+                </div><!-- end step1-contact -->
             </div>
             <!-- end step-1 -->
 
@@ -603,7 +897,7 @@
                         <div class="summary-head">Data Pemesan</div>
                         <div class="sum-row"><span class="sum-lbl">Nama</span><span class="sum-val" id="s-nama">—</span></div>
                         <div class="sum-row"><span class="sum-lbl">WhatsApp</span><span class="sum-val" id="s-phone">—</span></div>
-                        <div class="sum-row" id="s-email-row" style="display:none"><span class="sum-lbl">Email</span><span class="sum-val" id="s-email">—</span></div>
+                        <div class="sum-row" id="s-alamat-row"><span class="sum-lbl">Alamat</span><span class="sum-val" id="s-alamat">—</span></div>
                         <div class="sum-row" id="s-catatan-row"><span class="sum-lbl">Catatan</span><span class="sum-val" id="s-catatan">—</span></div>
                     </div>
 
@@ -618,7 +912,7 @@
 
                     <div class="btn-row" style="justify-content:center; border:none; margin-top:12px; padding-top:0">
                         <button class="btn-ghost" onclick="goBack()" type="button">
-                            <i class="fa-solid fa-arrow-left" style="font-size:10px"></i> Edit Pesanan
+                            <i class="fa-solid fa-arrow-left" style="font-size:12px"></i> Edit Pesanan
                         </button>
                     </div>
                 </div>
@@ -657,20 +951,8 @@
                 const dd = document.getElementById('jenis-batu');
                 if ([...dd.options].some(o => o.value === p)) dd.value = p;
                 else selectedProduct = p;
-                const known = [...dd.options].map(o => o.value);
-                if (!known.includes(p) && p) {
-                    dd.value = 'Lainnya';
-                    showJenisCustom(p);
-                }
                 openItemForm();
             }
-            document.getElementById('finishing-custom').addEventListener('input', function() {
-                selectedFinishing = this.value.trim();
-                document.getElementById('finishing').value = selectedFinishing;
-            });
-            document.getElementById('jenis-custom').addEventListener('input', function() {
-                if (this.value.trim()) selectedProduct = this.value.trim();
-            });
 
             renderItemList();
         });
@@ -682,17 +964,10 @@
             selectedProduct = el.dataset.product;
             const dd = document.getElementById('jenis-batu');
             dd.value = [...dd.options].some(o => o.value === selectedProduct) ? selectedProduct : '';
-            hideJenisCustom();
         }
 
         function syncProductFromDropdown(val) {
             document.querySelectorAll('.prod-card').forEach(c => c.classList.remove('selected'));
-            if (val === 'Lainnya') {
-                selectedProduct = '';
-                showJenisCustom();
-                return;
-            }
-            hideJenisCustom();
             if (!val) {
                 selectedProduct = '';
                 return;
@@ -702,48 +977,12 @@
             if (card) card.classList.add('selected');
         }
 
-        function showJenisCustom(prefill) {
-            const wrap = document.getElementById('jenis-custom-wrap');
-            const input = document.getElementById('jenis-custom');
-            wrap.style.display = 'block';
-            if (prefill) input.value = prefill;
-            setTimeout(() => input.focus(), 60);
-        }
-
-        function hideJenisCustom() {
-            document.getElementById('jenis-custom-wrap').style.display = 'none';
-            document.getElementById('jenis-custom').value = '';
-        }
-
         function getProductValue() {
-            const dd = document.getElementById('jenis-batu');
-            if (dd.value === 'Lainnya') return document.getElementById('jenis-custom').value.trim();
             return selectedProduct;
         }
 
-        /* ── Chip logic ───────────────────────────────────── */
+        /* ── Chip logic (no custom chip) ──────────────────── */
         function selectChip(el) {
-            const val = el.dataset.val;
-            if (val === '__custom__') {
-                const wrap = document.getElementById('finishing-custom-wrap');
-                const open = !wrap.classList.contains('visible');
-                wrap.classList.toggle('visible', open);
-                el.classList.toggle('active', open);
-                if (open) {
-                    document.querySelectorAll('.chip:not(#chip-custom-toggle)').forEach(c => c.classList.remove('active'));
-                    selectedFinishing = '';
-                    document.getElementById('finishing').value = '';
-                    setTimeout(() => document.getElementById('finishing-custom').focus(), 60);
-                } else {
-                    selectedFinishing = '';
-                    document.getElementById('finishing').value = '';
-                    document.getElementById('finishing-custom').value = '';
-                }
-                return;
-            }
-            document.getElementById('finishing-custom-wrap').classList.remove('visible');
-            document.getElementById('chip-custom-toggle').classList.remove('active');
-            document.getElementById('finishing-custom').value = '';
             if (el.classList.contains('active')) {
                 el.classList.remove('active');
                 selectedFinishing = '';
@@ -752,12 +991,24 @@
             }
             document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
             el.classList.add('active');
-            selectedFinishing = val;
-            document.getElementById('finishing').value = val;
+            selectedFinishing = el.dataset.val;
+            document.getElementById('finishing').value = el.dataset.val;
         }
 
         function getFinishingValue() {
-            return document.getElementById('finishing-custom').value.trim() || document.getElementById('finishing').value;
+            return document.getElementById('finishing').value;
+        }
+
+        /* ── Image preview ───────────────────────────────── */
+        function previewImages(input) {
+            const strip = document.getElementById('img-preview-strip');
+            strip.innerHTML = '';
+            Array.from(input.files).forEach(file => {
+                const url = URL.createObjectURL(file);
+                const img = document.createElement('img');
+                img.src = url;
+                strip.appendChild(img);
+            });
         }
 
         /* ── Item form open / cancel / save ──────────────── */
@@ -782,10 +1033,8 @@
                 if (card) {
                     card.classList.add('selected');
                     dd.value = it.product;
-                    hideJenisCustom();
                 } else {
-                    dd.value = 'Lainnya';
-                    showJenisCustom(it.product);
+                    dd.value = it.product;
                 }
 
                 document.getElementById('qty').value = it.qty || 1;
@@ -797,22 +1046,19 @@
 
                 // restore finishing
                 document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-                document.getElementById('finishing-custom-wrap').classList.remove('visible');
-                document.getElementById('finishing-custom').value = '';
                 document.getElementById('finishing').value = '';
                 selectedFinishing = it.finishing || '';
                 if (it.finishing) {
                     const chip = document.querySelector(`.chip[data-val="${it.finishing}"]`);
-                    if (chip && chip.dataset.val !== '__custom__') {
+                    if (chip) {
                         chip.classList.add('active');
-                        document.getElementById('finishing').value = it.finishing;
-                    } else if (!chip) {
-                        document.getElementById('chip-custom-toggle').classList.add('active');
-                        document.getElementById('finishing-custom-wrap').classList.add('visible');
-                        document.getElementById('finishing-custom').value = it.finishing;
                         document.getElementById('finishing').value = it.finishing;
                     }
                 }
+
+                // clear image preview on edit (images not persisted in items array)
+                document.getElementById('img-preview-strip').innerHTML = '';
+                document.getElementById('item-images').value = '';
             } else {
                 title.textContent = 'Tambah Item';
                 idxInput.value = '';
@@ -823,10 +1069,10 @@
                 document.getElementById('luas').value = '';
                 document.getElementById('item-catatan').value = '';
                 document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-                document.getElementById('finishing-custom-wrap').classList.remove('visible');
-                document.getElementById('finishing-custom').value = '';
                 document.getElementById('finishing').value = '';
                 selectedFinishing = '';
+                document.getElementById('img-preview-strip').innerHTML = '';
+                document.getElementById('item-images').value = '';
             }
 
             panel.scrollIntoView({
@@ -843,8 +1089,7 @@
         function saveItem() {
             const product = getProductValue();
             if (!product) {
-                const dd = document.getElementById('jenis-batu');
-                return showItemErr(dd.value === 'Lainnya' ? 'Tulis jenis batu yang Anda inginkan.' : 'Pilih jenis batu terlebih dahulu.');
+                return showItemErr('Pilih jenis batu terlebih dahulu.');
             }
             const qty = document.getElementById('qty').value.trim();
             if (!qty || parseInt(qty) < 1) return showItemErr('Jumlah batu wajib diisi (minimal 1).');
@@ -858,7 +1103,7 @@
                 length: len,
                 width: wid,
                 thickness: document.getElementById('thickness').value.trim(),
-                luas: document.getElementById('luas').value.trim(), // optional, boleh kosong
+                luas: document.getElementById('luas').value.trim(),
                 finishing: getFinishingValue(),
                 catatan: document.getElementById('item-catatan').value.trim(),
             };
@@ -886,8 +1131,8 @@
             }
 
             orderItems.forEach((it, idx) => {
-                let detail = `${it.qty} buah · ${it.length} × ${it.width}`;
-                if (it.thickness) detail += `, tebal ${it.thickness} `;
+                let detail = `${it.qty} buah · ${it.length} × ${it.width} cm`;
+                if (it.thickness) detail += `, tebal ${it.thickness} cm`;
                 if (it.luas && it.luas !== '') detail += ` · ${it.luas} m²`;
                 if (it.finishing) detail += ` · ${it.finishing}`;
                 if (it.catatan) detail += ` · "${it.catatan}"`;
@@ -901,8 +1146,8 @@
                         <div class="item-row-detail">${escHtml(detail)}</div>
                     </div>
                     <div class="item-row-actions">
-                        <button class="item-btn item-btn-edit" onclick="openItemForm(${idx})" title="Edit item"><i class="fa-solid fa-pen" style="font-size:11px"></i></button>
-                        <button class="item-btn item-btn-del"  onclick="deleteItem(${idx})"  title="Hapus item"><i class="fa-solid fa-trash" style="font-size:11px"></i></button>
+                        <button class="item-btn item-btn-edit" onclick="openItemForm(${idx})" title="Edit item"><i class="fa-solid fa-pen" style="font-size:12px"></i></button>
+                        <button class="item-btn item-btn-del"  onclick="deleteItem(${idx})"  title="Hapus item"><i class="fa-solid fa-trash" style="font-size:12px"></i></button>
                     </div>`;
                 list.appendChild(row);
             });
@@ -929,6 +1174,7 @@
             const ph = document.getElementById('phone').value.trim();
             if (!ph) return showErr('Nomor WhatsApp wajib diisi.');
             if (!/^\d{8,14}$/.test(ph)) return showErr('Format nomor tidak valid (contoh: 81234567890).');
+            if (!document.getElementById('alamat').value.trim()) return showErr('Alamat wajib diisi.');
             fillSummary();
             animStep('step-1', 'step-2', false);
             setSteps(2);
@@ -998,8 +1244,8 @@
             const container = document.getElementById('s-items-container');
             container.innerHTML = '';
             orderItems.forEach((it, idx) => {
-                let dimStr = `${it.qty} buah · ${it.length} × ${it.width} `;
-                if (it.thickness) dimStr += `, tebal ${it.thickness} `;
+                let dimStr = `${it.qty} buah · ${it.length} × ${it.width} cm`;
+                if (it.thickness) dimStr += `, tebal ${it.thickness} cm`;
                 if (it.luas && it.luas !== '') dimStr += ` · Luas: ${it.luas} m²`;
                 let detail = dimStr;
                 if (it.finishing) detail += ` · Finishing: ${it.finishing}`;
@@ -1016,13 +1262,12 @@
                 container.appendChild(row);
             });
 
-            const email = g('email');
             const catatan = g('catatan');
+            const alamat = g('alamat');
             document.getElementById('s-nama').textContent = g('nama');
             document.getElementById('s-phone').textContent = '+62' + g('phone');
-            const er = document.getElementById('s-email-row');
-            document.getElementById('s-email').textContent = email;
-            er.style.display = email ? 'flex' : 'none';
+            document.getElementById('s-alamat').textContent = alamat || '—';
+            document.getElementById('s-alamat-row').style.display = 'flex';
             document.getElementById('s-catatan').textContent = catatan || '—';
             document.getElementById('s-catatan-row').style.display = 'flex';
         }
@@ -1030,13 +1275,13 @@
         /* ── WA message ──────────────────────────────────── */
         function kirimWA() {
             const g = id => document.getElementById(id)?.value?.trim() ?? '';
-            const email = g('email');
             const note = g('catatan') || '-';
+            const alamat = g('alamat') || '-';
 
             let itemsText = '';
             orderItems.forEach((it, idx) => {
-                let dimLine = `${it.length} × ${it.width} `;
-                if (it.thickness) dimLine += `, tebal ${it.thickness} `;
+                let dimLine = `${it.length} × ${it.width} cm`;
+                if (it.thickness) dimLine += `, tebal ${it.thickness} cm`;
                 if (it.luas && it.luas !== '') dimLine += ` (${it.luas} m²)`;
                 itemsText += `\n*Item ${idx + 1}:*\n`;
                 itemsText += `  Jenis    : ${it.product}\n`;
@@ -1047,7 +1292,7 @@
             });
 
             const msg =
-                `Halo TierraStone!\n\nSaya ingin memesan batu alam:\n${itemsText}\n*Data Pemesan:*\nNama : ${g('nama')}\nNo. WA : +62${g('phone')}${email ? '\nEmail : ' + email : ''}\n\n*Catatan Umum:* ${note}\n\nMohon informasi selanjutnya. Terima kasih!`;
+                `Halo TierraStone!\n\nSaya ingin memesan batu alam:\n${itemsText}\n*Data Pemesan:*\nNama : ${g('nama')}\nNo. WA : +62${g('phone')}\nAlamat : ${alamat}\n\n*Catatan Umum:* ${note}\n\nMohon informasi selanjutnya. Terima kasih!`;
 
             window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
         }
