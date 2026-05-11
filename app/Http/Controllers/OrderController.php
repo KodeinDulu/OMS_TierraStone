@@ -6,6 +6,8 @@ use App\Models\FinishingType;
 use App\Models\StoneType;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use App\Models\OrderItem;
+use Illuminate\Support\Str; 
 
 class OrderController extends Controller
 {
@@ -89,4 +91,87 @@ class OrderController extends Controller
 
         return response()->json($orders);
     }
-}
+
+// Simpan order baru dari form publik (tanpa login)
+    public function store(Request $request)
+    {
+        $request->validate([
+            'customer_name'     => 'required|string|max:255',
+            'customer_phone'    => 'required|string|max:20',
+            'customer_address'  => 'required|string|max:500',
+            'notes'             => 'nullable|string|max:1000',
+            'items'             => 'required|array|min:1',
+            'items.*.product'   => 'required|string',
+            'items.*.qty'       => 'required|integer|min:1',
+            'items.*.length'    => 'required|numeric|min:1',
+            'items.*.width'     => 'required|numeric|min:1',
+            'items.*.thickness' => 'nullable|numeric|min:0',
+            'items.*.luas'      => 'nullable|numeric|min:0',
+            'items.*.finishing' => 'nullable|string',
+            'items.*.catatan'   => 'nullable|string|max:500',
+        ]);
+ 
+        // Bersihkan nomor HP: strip +62 atau 62 di depan, simpan tanpa awalan
+        $phone = preg_replace('/[\s\-\+]/', '', $request->customer_phone);
+        if (str_starts_with($phone, '62')) {
+            $phone = substr($phone, 2);
+        } elseif (str_starts_with($phone, '0')) {
+            $phone = substr($phone, 1);
+        }
+ 
+        // Generate order_code unik: TS-YYYYMMDD-XXXX
+        do {
+            $orderCode = 'TS-' . now()->format('Ymd') . '-' . strtoupper(Str::random(4));
+        } while (Order::where('order_code', $orderCode)->exists());
+ 
+        // sales_id: form publik tanpa login, pakai ID 1 (admin default)
+        // Ganti dengan ID user/sales yang sesuai jika perlu
+        $salesId = 1;
+ 
+        $order = Order::create([
+            'order_code'       => $orderCode,
+            'sales_id'         => $salesId,
+            'customer_name'    => $request->customer_name,
+            'customer_phone'   => $phone,
+            'customer_address' => $request->customer_address,
+            'notes'            => $request->notes,
+            'status'           => 'indent',
+        ]);
+ 
+        foreach ($request->items as $itemData) {
+            $stone = StoneType::where('name', $itemData['product'])->first();
+ 
+            if (!$stone) {
+                $order->forceDelete();
+                return response()->json([
+                    'success' => false,
+                    'message' => "Jenis batu '{$itemData['product']}' tidak ditemukan.",
+                ], 422);
+            }
+ 
+            $finishingId = null;
+            if (!empty($itemData['finishing'])) {
+                $finishing   = FinishingType::where('name', $itemData['finishing'])->first();
+                $finishingId = $finishing?->id;
+            }
+ 
+            OrderItem::create([
+                'order_id'          => $order->id,
+                'stone_type_id'     => $stone->id,
+                'finishing_type_id' => $finishingId,
+                'height'            => $itemData['length'],   // height di DB = panjang di form
+                'width'             => $itemData['width'],
+                'thickness'         => $itemData['thickness'] ?? 0,
+                'quantity_pcs'      => $itemData['qty'],
+                'quantity_sqm'      => !empty($itemData['luas']) ? $itemData['luas'] : null,
+            ]);
+        }
+ 
+        return response()->json([
+            'success'    => true,
+            'order_id'   => $order->id,
+            'order_code' => $order->order_code,
+        ], 201);
+    }
+    
+    }

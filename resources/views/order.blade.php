@@ -355,6 +355,10 @@
             background: #ddd8cf;
         }
 
+          @media (max-width: 720px) {
+                            .grid-three { grid-template-columns: 1fr !important; }
+                        }
+
         .btn-save-item {
             display: inline-flex;
             align-items: center;
@@ -849,9 +853,7 @@
                             </div>
                         </div>
 
-                        @media (max-width: 720px) {
-                            .grid-three { grid-template-columns: 1fr !important; }
-                        }
+                      
 
                         <!-- Catatan Umum -->
                         <div class="field">
@@ -906,7 +908,7 @@
                         <span>Pesan WhatsApp sudah terisi otomatis. Klik tombol di bawah dan tinggal kirim.</span>
                     </div>
 
-                    <button class="btn-wa" onclick="kirimWA()" type="button">
+                    <button class="btn-wa" onclick="submitOrder()" type="button">
                         <i class="fa-brands fa-whatsapp"></i> Kirim via WhatsApp
                     </button>
 
@@ -935,368 +937,388 @@
     </footer>
 
     <script>
-        const WA_NUMBER = '6289683000050';
+    const WA_NUMBER = '6289683000050';
+    const STORE_URL  = '{{ route("order.store") }}';
+    const CSRF_TOKEN = '{{ csrf_token() }}';
 
-        let selectedProduct = '',
+    let selectedProduct  = '',
+        selectedFinishing = '';
+    let orderItems = [];
+
+    /* ── Init ─────────────────────────────────────────── */
+    window.addEventListener('DOMContentLoaded', () => {
+        const p = new URLSearchParams(window.location.search).get('product');
+        if (p) {
+            const card = document.querySelector(`.prod-card[data-product="${p}"]`);
+            if (card) selectProduct(card);
+            const dd = document.getElementById('jenis-batu');
+            if ([...dd.options].some(o => o.value === p)) dd.value = p;
+            else selectedProduct = p;
+            openItemForm();
+        }
+        renderItemList();
+    });
+
+    /* ── Product selection ────────────────────────────── */
+    function selectProduct(el) {
+        document.querySelectorAll('.prod-card').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedProduct = el.dataset.product;
+        const dd = document.getElementById('jenis-batu');
+        dd.value = [...dd.options].some(o => o.value === selectedProduct) ? selectedProduct : '';
+    }
+
+    function syncProductFromDropdown(val) {
+        document.querySelectorAll('.prod-card').forEach(c => c.classList.remove('selected'));
+        if (!val) { selectedProduct = ''; return; }
+        selectedProduct = val;
+        const card = document.querySelector(`.prod-card[data-product="${val}"]`);
+        if (card) card.classList.add('selected');
+    }
+
+    function getProductValue() { return selectedProduct; }
+
+    /* ── Chip logic ──────────────────────────────────── */
+    function selectChip(el) {
+        if (el.classList.contains('active')) {
+            el.classList.remove('active');
             selectedFinishing = '';
-        // Each item: { product, qty, length, width, thickness, luas, finishing, catatan }
-        let orderItems = [];
+            document.getElementById('finishing').value = '';
+            return;
+        }
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        selectedFinishing = el.dataset.val;
+        document.getElementById('finishing').value = el.dataset.val;
+    }
 
-        /* ── Init ─────────────────────────────────────────── */
-        window.addEventListener('DOMContentLoaded', () => {
-            const p = new URLSearchParams(window.location.search).get('product');
-            if (p) {
-                const card = document.querySelector(`.prod-card[data-product="${p}"]`);
-                if (card) selectProduct(card);
-                const dd = document.getElementById('jenis-batu');
-                if ([...dd.options].some(o => o.value === p)) dd.value = p;
-                else selectedProduct = p;
-                openItemForm();
+    function getFinishingValue() {
+        return document.getElementById('finishing').value;
+    }
+
+    /* ── Image preview ───────────────────────────────── */
+    function previewImages(input) {
+        const strip = document.getElementById('img-preview-strip');
+        strip.innerHTML = '';
+        Array.from(input.files).forEach(file => {
+            const url = URL.createObjectURL(file);
+            const img = document.createElement('img');
+            img.src = url;
+            strip.appendChild(img);
+        });
+    }
+
+    /* ── Item form open / cancel / save ──────────────── */
+    function openItemForm(editIdx) {
+        const panel  = document.getElementById('item-form-panel');
+        const addBtn = document.getElementById('btn-add-item');
+        panel.style.display = 'block';
+        addBtn.style.display = 'none';
+
+        const title    = document.getElementById('item-form-title');
+        const idxInput = document.getElementById('edit-item-idx');
+
+        if (editIdx !== undefined) {
+            title.textContent = `Edit Item ${editIdx + 1}`;
+            idxInput.value    = editIdx;
+            const it = orderItems[editIdx];
+
+            selectedProduct = it.product;
+            document.querySelectorAll('.prod-card').forEach(c => c.classList.remove('selected'));
+            const card = document.querySelector(`.prod-card[data-product="${it.product}"]`);
+            const dd   = document.getElementById('jenis-batu');
+            if (card) { card.classList.add('selected'); dd.value = it.product; }
+            else       { dd.value = it.product; }
+
+            document.getElementById('qty').value        = it.qty || 1;
+            document.getElementById('length').value     = it.length;
+            document.getElementById('width').value      = it.width;
+            document.getElementById('thickness').value  = it.thickness || '';
+            document.getElementById('luas').value       = it.luas || '';
+            document.getElementById('item-catatan').value = it.catatan || '';
+
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            document.getElementById('finishing').value = '';
+            selectedFinishing = it.finishing || '';
+            if (it.finishing) {
+                const chip = document.querySelector(`.chip[data-val="${it.finishing}"]`);
+                if (chip) { chip.classList.add('active'); document.getElementById('finishing').value = it.finishing; }
             }
 
-            renderItemList();
+            document.getElementById('img-preview-strip').innerHTML = '';
+            document.getElementById('item-images').value = '';
+        } else {
+            title.textContent  = 'Tambah Item';
+            idxInput.value     = '';
+            document.getElementById('qty').value          = 1;
+            document.getElementById('length').value       = '';
+            document.getElementById('width').value        = '';
+            document.getElementById('thickness').value    = '';
+            document.getElementById('luas').value         = '';
+            document.getElementById('item-catatan').value = '';
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            document.getElementById('finishing').value    = '';
+            selectedFinishing = '';
+            document.getElementById('img-preview-strip').innerHTML = '';
+            document.getElementById('item-images').value = '';
+        }
+
+        panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function cancelItemForm() {
+        document.getElementById('item-form-panel').style.display = 'none';
+        document.getElementById('btn-add-item').style.display    = 'flex';
+    }
+
+    function saveItem() {
+        const product = getProductValue();
+        if (!product) return showItemErr('Pilih jenis batu terlebih dahulu.');
+        const qty = document.getElementById('qty').value.trim();
+        if (!qty || parseInt(qty) < 1) return showItemErr('Jumlah batu wajib diisi (minimal 1).');
+        const len = document.getElementById('length').value.trim();
+        const wid = document.getElementById('width').value.trim();
+        if (!len || !wid) return showItemErr('Panjang dan lebar wajib diisi.');
+
+        const item = {
+            product,
+            qty,
+            length:    len,
+            width:     wid,
+            thickness: document.getElementById('thickness').value.trim(),
+            luas:      document.getElementById('luas').value.trim(),
+            finishing: getFinishingValue(),
+            catatan:   document.getElementById('item-catatan').value.trim(),
+        };
+
+        const idxVal = document.getElementById('edit-item-idx').value;
+        if (idxVal !== '') orderItems[parseInt(idxVal)] = item;
+        else               orderItems.push(item);
+
+        renderItemList();
+        cancelItemForm();
+    }
+
+    function deleteItem(idx) {
+        orderItems.splice(idx, 1);
+        renderItemList();
+    }
+
+    function renderItemList() {
+        const list = document.getElementById('items-list');
+        list.innerHTML = '';
+
+        if (orderItems.length === 0) {
+            list.innerHTML = `<div style="font-size:13px; color:var(--muted); padding:4px 0 8px;">Belum ada item ditambahkan.</div>`;
+            return;
+        }
+
+        orderItems.forEach((it, idx) => {
+            let detail = `${it.qty} buah · ${it.length} × ${it.width} cm`;
+            if (it.thickness) detail += `, tebal ${it.thickness} cm`;
+            if (it.luas && it.luas !== '') detail += ` · ${it.luas} m²`;
+            if (it.finishing) detail += ` · ${it.finishing}`;
+            if (it.catatan)   detail += ` · "${it.catatan}"`;
+
+            const row = document.createElement('div');
+            row.className = 'item-row';
+            row.innerHTML = `
+                <div class="item-row-num">${idx + 1}</div>
+                <div class="item-row-body">
+                    <div class="item-row-name">${escHtml(it.product)}</div>
+                    <div class="item-row-detail">${escHtml(detail)}</div>
+                </div>
+                <div class="item-row-actions">
+                    <button class="item-btn item-btn-edit" onclick="openItemForm(${idx})" title="Edit item"><i class="fa-solid fa-pen" style="font-size:12px"></i></button>
+                    <button class="item-btn item-btn-del"  onclick="deleteItem(${idx})"  title="Hapus item"><i class="fa-solid fa-trash" style="font-size:12px"></i></button>
+                </div>`;
+            list.appendChild(row);
+        });
+    }
+
+    function showItemErr(msg) {
+        const box = document.getElementById('item-error');
+        document.getElementById('item-err-msg').textContent = msg;
+        box.classList.add('visible', 'shake');
+        setTimeout(() => box.classList.remove('shake'),   350);
+        setTimeout(() => box.classList.remove('visible'), 4500);
+    }
+
+    function escHtml(str) {
+        return String(str)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    /* ── Step navigation ─────────────────────────────── */
+    function goStep2() {
+        if (orderItems.length === 0) return showErr('Tambahkan minimal satu item batu terlebih dahulu.');
+        if (!document.getElementById('nama').value.trim()) return showErr('Nama lengkap wajib diisi.');
+        const ph = document.getElementById('phone').value.trim();
+        if (!ph) return showErr('Nomor WhatsApp wajib diisi.');
+        if (!/^\d{8,14}$/.test(ph)) return showErr('Format nomor tidak valid (contoh: 81234567890).');
+        if (!document.getElementById('alamat').value.trim()) return showErr('Alamat wajib diisi.');
+        fillSummary();
+        animStep('step-1', 'step-2', false);
+        setSteps(2);
+        document.getElementById('prog-fill').style.width = '100%';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goBack() {
+        animStep('step-2', 'step-1', true);
+        setSteps(1);
+        document.getElementById('prog-fill').style.width = '50%';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function animStep(fromId, toId, isBack) {
+        const from = document.getElementById(fromId);
+        const to   = document.getElementById(toId);
+        from.classList.add('anim-out');
+        setTimeout(() => {
+            from.classList.remove('active', 'anim-out');
+            from.style.display = 'none';
+            to.style.display   = 'block';
+            to.classList.add(isBack ? 'anim-in-back' : 'anim-in');
+            setTimeout(() => {
+                to.classList.remove('anim-in', 'anim-in-back');
+                to.classList.add('active');
+            }, 350);
+        }, 180);
+    }
+
+    function setSteps(active) {
+        const i1 = document.getElementById('step-item-1'), i2 = document.getElementById('step-item-2');
+        const n1 = document.getElementById('step-num-1'),  n2 = document.getElementById('step-num-2');
+        if (active === 1) {
+            i1.className = 'step-item active'; n1.innerHTML = '1';
+            i2.className = 'step-item';        n2.innerHTML = '2';
+        } else {
+            i1.className = 'step-item done'; n1.innerHTML = '<i class="fa-solid fa-check" style="font-size:9px"></i>';
+            i2.className = 'step-item active'; n2.innerHTML = '2';
+        }
+    }
+
+    function showErr(msg) {
+        const box = document.getElementById('step1-error');
+        document.getElementById('s1-msg').textContent = msg;
+        box.classList.add('visible', 'shake');
+        setTimeout(() => box.classList.remove('shake'),   350);
+        setTimeout(() => box.classList.remove('visible'), 4500);
+    }
+
+    /* ── Fill summary ────────────────────────────────── */
+    function fillSummary() {
+        const g = id => document.getElementById(id)?.value?.trim() ?? '';
+
+        const container = document.getElementById('s-items-container');
+        container.innerHTML = '';
+        orderItems.forEach((it, idx) => {
+            let dimStr = `${it.qty} buah · ${it.length} × ${it.width} cm`;
+            if (it.thickness) dimStr += `, tebal ${it.thickness} cm`;
+            if (it.luas && it.luas !== '') dimStr += ` · Luas: ${it.luas} m²`;
+            let detail = dimStr;
+            if (it.finishing) detail += ` · Finishing: ${it.finishing}`;
+            if (it.catatan)   detail += ` · Catatan: ${it.catatan}`;
+
+            const row = document.createElement('div');
+            row.className = 'sum-item-row';
+            row.innerHTML = `
+                <div class="sum-item-num">${idx + 1}</div>
+                <div class="sum-item-body">
+                    <div class="sum-item-name">${escHtml(it.product)}</div>
+                    <div class="sum-item-detail">${escHtml(detail)}</div>
+                </div>`;
+            container.appendChild(row);
         });
 
-        /* ── Product selection ────────────────────────────── */
-        function selectProduct(el) {
-            document.querySelectorAll('.prod-card').forEach(c => c.classList.remove('selected'));
-            el.classList.add('selected');
-            selectedProduct = el.dataset.product;
-            const dd = document.getElementById('jenis-batu');
-            dd.value = [...dd.options].some(o => o.value === selectedProduct) ? selectedProduct : '';
-        }
+        const catatan = g('catatan');
+        const alamat  = g('alamat');
+        document.getElementById('s-nama').textContent  = g('nama');
+        document.getElementById('s-phone').textContent = '+62' + g('phone');
+        document.getElementById('s-alamat').textContent  = alamat || '—';
+        document.getElementById('s-alamat-row').style.display = 'flex';
+        document.getElementById('s-catatan').textContent = catatan || '—';
+        document.getElementById('s-catatan-row').style.display = 'flex';
+    }
 
-        function syncProductFromDropdown(val) {
-            document.querySelectorAll('.prod-card').forEach(c => c.classList.remove('selected'));
-            if (!val) {
-                selectedProduct = '';
-                return;
-            }
-            selectedProduct = val;
-            const card = document.querySelector(`.prod-card[data-product="${val}"]`);
-            if (card) card.classList.add('selected');
-        }
+    /* ── Submit: simpan ke DB dulu, lalu buka WA ─────── */
+    async function submitOrder() {
+        const btn = document.querySelector('.btn-wa');
+        const g   = id => document.getElementById(id)?.value?.trim() ?? '';
 
-        function getProductValue() {
-            return selectedProduct;
-        }
+        // Disable tombol & tunjukkan loading
+        btn.disabled     = true;
+        btn.innerHTML    = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan pesanan...';
 
-        /* ── Chip logic (no custom chip) ──────────────────── */
-        function selectChip(el) {
-            if (el.classList.contains('active')) {
-                el.classList.remove('active');
-                selectedFinishing = '';
-                document.getElementById('finishing').value = '';
-                return;
-            }
-            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            selectedFinishing = el.dataset.val;
-            document.getElementById('finishing').value = el.dataset.val;
-        }
+        const payload = {
+            customer_name:    g('nama'),
+            customer_phone:   '+62' + g('phone'),
+            customer_address: g('alamat'),
+            notes:            g('catatan'),
+            items:            orderItems,
+        };
 
-        function getFinishingValue() {
-            return document.getElementById('finishing').value;
-        }
-
-        /* ── Image preview ───────────────────────────────── */
-        function previewImages(input) {
-            const strip = document.getElementById('img-preview-strip');
-            strip.innerHTML = '';
-            Array.from(input.files).forEach(file => {
-                const url = URL.createObjectURL(file);
-                const img = document.createElement('img');
-                img.src = url;
-                strip.appendChild(img);
+        try {
+            const res  = await fetch(STORE_URL, {
+                method:  'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': CSRF_TOKEN,
+                    'Accept':       'application/json',
+                },
+                body: JSON.stringify(payload),
             });
-        }
 
-        /* ── Item form open / cancel / save ──────────────── */
-        function openItemForm(editIdx) {
-            const panel = document.getElementById('item-form-panel');
-            const addBtn = document.getElementById('btn-add-item');
-            panel.style.display = 'block';
-            addBtn.style.display = 'none';
+            const data = await res.json();
 
-            const title = document.getElementById('item-form-title');
-            const idxInput = document.getElementById('edit-item-idx');
-
-            if (editIdx !== undefined) {
-                title.textContent = `Edit Item ${editIdx + 1}`;
-                idxInput.value = editIdx;
-                const it = orderItems[editIdx];
-
-                selectedProduct = it.product;
-                document.querySelectorAll('.prod-card').forEach(c => c.classList.remove('selected'));
-                const card = document.querySelector(`.prod-card[data-product="${it.product}"]`);
-                const dd = document.getElementById('jenis-batu');
-                if (card) {
-                    card.classList.add('selected');
-                    dd.value = it.product;
-                } else {
-                    dd.value = it.product;
-                }
-
-                document.getElementById('qty').value = it.qty || 1;
-                document.getElementById('length').value = it.length;
-                document.getElementById('width').value = it.width;
-                document.getElementById('thickness').value = it.thickness || '';
-                document.getElementById('luas').value = it.luas || '';
-                document.getElementById('item-catatan').value = it.catatan || '';
-
-                // restore finishing
-                document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-                document.getElementById('finishing').value = '';
-                selectedFinishing = it.finishing || '';
-                if (it.finishing) {
-                    const chip = document.querySelector(`.chip[data-val="${it.finishing}"]`);
-                    if (chip) {
-                        chip.classList.add('active');
-                        document.getElementById('finishing').value = it.finishing;
-                    }
-                }
-
-                // clear image preview on edit (images not persisted in items array)
-                document.getElementById('img-preview-strip').innerHTML = '';
-                document.getElementById('item-images').value = '';
-            } else {
-                title.textContent = 'Tambah Item';
-                idxInput.value = '';
-                document.getElementById('qty').value = 1;
-                document.getElementById('length').value = '';
-                document.getElementById('width').value = '';
-                document.getElementById('thickness').value = '';
-                document.getElementById('luas').value = '';
-                document.getElementById('item-catatan').value = '';
-                document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-                document.getElementById('finishing').value = '';
-                selectedFinishing = '';
-                document.getElementById('img-preview-strip').innerHTML = '';
-                document.getElementById('item-images').value = '';
+            if (!res.ok || !data.success) {
+                throw new Error(data.message || 'Terjadi kesalahan saat menyimpan pesanan.');
             }
 
-            panel.scrollIntoView({
-                behavior: 'smooth',
-                block: 'nearest'
-            });
+            // Berhasil — buka WhatsApp dengan order_code
+            bukaWhatsApp(data.order_code, g);
+
+        } catch (err) {
+            alert('Gagal menyimpan pesanan: ' + err.message);
+        } finally {
+            btn.disabled  = false;
+            btn.innerHTML = '<i class="fa-brands fa-whatsapp"></i> Kirim via WhatsApp';
         }
+    }
 
-        function cancelItemForm() {
-            document.getElementById('item-form-panel').style.display = 'none';
-            document.getElementById('btn-add-item').style.display = 'flex';
-        }
+    /* ── Buka WA dengan order_code disertakan ─────────── */
+    function bukaWhatsApp(orderCode, g) {
+        const note  = g('catatan') || '-';
+        const alamat = g('alamat') || '-';
 
-        function saveItem() {
-            const product = getProductValue();
-            if (!product) {
-                return showItemErr('Pilih jenis batu terlebih dahulu.');
-            }
-            const qty = document.getElementById('qty').value.trim();
-            if (!qty || parseInt(qty) < 1) return showItemErr('Jumlah batu wajib diisi (minimal 1).');
-            const len = document.getElementById('length').value.trim();
-            const wid = document.getElementById('width').value.trim();
-            if (!len || !wid) return showItemErr('Panjang dan lebar wajib diisi.');
+        let itemsText = '';
+        orderItems.forEach((it, idx) => {
+            let dimLine = `${it.length} × ${it.width} cm`;
+            if (it.thickness) dimLine += `, tebal ${it.thickness} cm`;
+            if (it.luas && it.luas !== '') dimLine += ` (${it.luas} m²)`;
+            itemsText += `\n*Item ${idx + 1}:*\n`;
+            itemsText += `  Jenis    : ${it.product}\n`;
+            itemsText += `  Jumlah   : ${it.qty} buah\n`;
+            itemsText += `  Dimensi  : ${dimLine}\n`;
+            if (it.finishing) itemsText += `  Finishing: ${it.finishing}\n`;
+            if (it.catatan)   itemsText += `  Catatan  : ${it.catatan}\n`;
+        });
 
-            const item = {
-                product,
-                qty,
-                length: len,
-                width: wid,
-                thickness: document.getElementById('thickness').value.trim(),
-                luas: document.getElementById('luas').value.trim(),
-                finishing: getFinishingValue(),
-                catatan: document.getElementById('item-catatan').value.trim(),
-            };
+        const msg =
+            `Halo TierraStone!\n\n` +
+            `*No. Pesanan: ${orderCode}*\n\n` +
+            `Saya ingin memesan batu alam:\n${itemsText}\n` +
+            `*Data Pemesan:*\n` +
+            `Nama    : ${g('nama')}\n` +
+            `No. WA  : +62${g('phone')}\n` +
+            `Alamat  : ${alamat}\n\n` +
+            `*Catatan Umum:* ${note}\n\n` +
+            `Mohon informasi selanjutnya. Terima kasih!`;
 
-            const idxVal = document.getElementById('edit-item-idx').value;
-            if (idxVal !== '') orderItems[parseInt(idxVal)] = item;
-            else orderItems.push(item);
-
-            renderItemList();
-            cancelItemForm();
-        }
-
-        function deleteItem(idx) {
-            orderItems.splice(idx, 1);
-            renderItemList();
-        }
-
-        function renderItemList() {
-            const list = document.getElementById('items-list');
-            list.innerHTML = '';
-
-            if (orderItems.length === 0) {
-                list.innerHTML = `<div style="font-size:13px; color:var(--muted); padding:4px 0 8px;">Belum ada item ditambahkan.</div>`;
-                return;
-            }
-
-            orderItems.forEach((it, idx) => {
-                let detail = `${it.qty} buah · ${it.length} × ${it.width} cm`;
-                if (it.thickness) detail += `, tebal ${it.thickness} cm`;
-                if (it.luas && it.luas !== '') detail += ` · ${it.luas} m²`;
-                if (it.finishing) detail += ` · ${it.finishing}`;
-                if (it.catatan) detail += ` · "${it.catatan}"`;
-
-                const row = document.createElement('div');
-                row.className = 'item-row';
-                row.innerHTML = `
-                    <div class="item-row-num">${idx + 1}</div>
-                    <div class="item-row-body">
-                        <div class="item-row-name">${escHtml(it.product)}</div>
-                        <div class="item-row-detail">${escHtml(detail)}</div>
-                    </div>
-                    <div class="item-row-actions">
-                        <button class="item-btn item-btn-edit" onclick="openItemForm(${idx})" title="Edit item"><i class="fa-solid fa-pen" style="font-size:12px"></i></button>
-                        <button class="item-btn item-btn-del"  onclick="deleteItem(${idx})"  title="Hapus item"><i class="fa-solid fa-trash" style="font-size:12px"></i></button>
-                    </div>`;
-                list.appendChild(row);
-            });
-        }
-
-        function showItemErr(msg) {
-            const box = document.getElementById('item-error');
-            document.getElementById('item-err-msg').textContent = msg;
-            box.classList.add('visible', 'shake');
-            setTimeout(() => box.classList.remove('shake'), 350);
-            setTimeout(() => box.classList.remove('visible'), 4500);
-        }
-
-        function escHtml(str) {
-            return String(str)
-                .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-        }
-
-        /* ── Step navigation ─────────────────────────────── */
-        function goStep2() {
-            if (orderItems.length === 0) return showErr('Tambahkan minimal satu item batu terlebih dahulu.');
-            if (!document.getElementById('nama').value.trim()) return showErr('Nama lengkap wajib diisi.');
-            const ph = document.getElementById('phone').value.trim();
-            if (!ph) return showErr('Nomor WhatsApp wajib diisi.');
-            if (!/^\d{8,14}$/.test(ph)) return showErr('Format nomor tidak valid (contoh: 81234567890).');
-            if (!document.getElementById('alamat').value.trim()) return showErr('Alamat wajib diisi.');
-            fillSummary();
-            animStep('step-1', 'step-2', false);
-            setSteps(2);
-            document.getElementById('prog-fill').style.width = '100%';
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
-
-        function goBack() {
-            animStep('step-2', 'step-1', true);
-            setSteps(1);
-            document.getElementById('prog-fill').style.width = '50%';
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
-
-        function animStep(fromId, toId, isBack) {
-            const from = document.getElementById(fromId);
-            const to = document.getElementById(toId);
-            from.classList.add('anim-out');
-            setTimeout(() => {
-                from.classList.remove('active', 'anim-out');
-                from.style.display = 'none';
-                to.style.display = 'block';
-                to.classList.add(isBack ? 'anim-in-back' : 'anim-in');
-                setTimeout(() => {
-                    to.classList.remove('anim-in', 'anim-in-back');
-                    to.classList.add('active');
-                }, 350);
-            }, 180);
-        }
-
-        function setSteps(active) {
-            const i1 = document.getElementById('step-item-1'),
-                i2 = document.getElementById('step-item-2');
-            const n1 = document.getElementById('step-num-1'),
-                n2 = document.getElementById('step-num-2');
-            if (active === 1) {
-                i1.className = 'step-item active';
-                n1.innerHTML = '1';
-                i2.className = 'step-item';
-                n2.innerHTML = '2';
-            } else {
-                i1.className = 'step-item done';
-                n1.innerHTML = '<i class="fa-solid fa-check" style="font-size:9px"></i>';
-                i2.className = 'step-item active';
-                n2.innerHTML = '2';
-            }
-        }
-
-        function showErr(msg) {
-            const box = document.getElementById('step1-error');
-            document.getElementById('s1-msg').textContent = msg;
-            box.classList.add('visible', 'shake');
-            setTimeout(() => box.classList.remove('shake'), 350);
-            setTimeout(() => box.classList.remove('visible'), 4500);
-        }
-
-        /* ── Fill summary ────────────────────────────────── */
-        function fillSummary() {
-            const g = id => document.getElementById(id)?.value?.trim() ?? '';
-
-            const container = document.getElementById('s-items-container');
-            container.innerHTML = '';
-            orderItems.forEach((it, idx) => {
-                let dimStr = `${it.qty} buah · ${it.length} × ${it.width} cm`;
-                if (it.thickness) dimStr += `, tebal ${it.thickness} cm`;
-                if (it.luas && it.luas !== '') dimStr += ` · Luas: ${it.luas} m²`;
-                let detail = dimStr;
-                if (it.finishing) detail += ` · Finishing: ${it.finishing}`;
-                if (it.catatan) detail += ` · Catatan: ${it.catatan}`;
-
-                const row = document.createElement('div');
-                row.className = 'sum-item-row';
-                row.innerHTML = `
-                    <div class="sum-item-num">${idx + 1}</div>
-                    <div class="sum-item-body">
-                        <div class="sum-item-name">${escHtml(it.product)}</div>
-                        <div class="sum-item-detail">${escHtml(detail)}</div>
-                    </div>`;
-                container.appendChild(row);
-            });
-
-            const catatan = g('catatan');
-            const alamat = g('alamat');
-            document.getElementById('s-nama').textContent = g('nama');
-            document.getElementById('s-phone').textContent = '+62' + g('phone');
-            document.getElementById('s-alamat').textContent = alamat || '—';
-            document.getElementById('s-alamat-row').style.display = 'flex';
-            document.getElementById('s-catatan').textContent = catatan || '—';
-            document.getElementById('s-catatan-row').style.display = 'flex';
-        }
-
-        /* ── WA message ──────────────────────────────────── */
-        function kirimWA() {
-            const g = id => document.getElementById(id)?.value?.trim() ?? '';
-            const note = g('catatan') || '-';
-            const alamat = g('alamat') || '-';
-
-            let itemsText = '';
-            orderItems.forEach((it, idx) => {
-                let dimLine = `${it.length} × ${it.width} cm`;
-                if (it.thickness) dimLine += `, tebal ${it.thickness} cm`;
-                if (it.luas && it.luas !== '') dimLine += ` (${it.luas} m²)`;
-                itemsText += `\n*Item ${idx + 1}:*\n`;
-                itemsText += `  Jenis    : ${it.product}\n`;
-                itemsText += `  Jumlah   : ${it.qty} buah\n`;
-                itemsText += `  Dimensi  : ${dimLine}\n`;
-                if (it.finishing) itemsText += `  Finishing: ${it.finishing}\n`;
-                if (it.catatan) itemsText += `  Catatan  : ${it.catatan}\n`;
-            });
-
-            const msg =
-                `Halo TierraStone!\n\nSaya ingin memesan batu alam:\n${itemsText}\n*Data Pemesan:*\nNama : ${g('nama')}\nNo. WA : +62${g('phone')}\nAlamat : ${alamat}\n\n*Catatan Umum:* ${note}\n\nMohon informasi selanjutnya. Terima kasih!`;
-
-            window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
-        }
-    </script>
+        window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+</script>
 </body>
-
 </html>
