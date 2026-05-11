@@ -38,12 +38,12 @@ class OrderController extends Controller
             return response()->json([]);
         }
 
-   
-        $phoneQuery = preg_replace('/[\s\-\+]/', '', $q);    
+
+        $phoneQuery = preg_replace('/[\s\-\+]/', '', $q);
         if (str_starts_with($phoneQuery, '62')) {
-            $phoneQuery = substr($phoneQuery, 2);              
+            $phoneQuery = substr($phoneQuery, 2);
         } elseif (str_starts_with($phoneQuery, '0')) {
-            $phoneQuery = substr($phoneQuery, 1);                
+            $phoneQuery = substr($phoneQuery, 1);
         }
 
         $isPhone = preg_match('/^\d{8,14}$/', $phoneQuery);
@@ -67,7 +67,7 @@ class OrderController extends Controller
                     'id'        => $order->order_code,
                     'nama'      => $order->customer_name,
                     'phone'     => $order->customer_phone ? '+62' . $order->customer_phone : '—',
-                    'email'     => $order->customer_email,
+                    'address'   => $order->customer_address,
                     'produk'    => $firstItem?->stoneType?->name ?? '—',
                     'finishing' => $firstItem?->finishing ?? '—',
                     'dimensi'   => $firstItem ? "{$firstItem->width} × {$firstItem->height}" . ($firstItem->thickness ? " × {$firstItem->thickness}" : '') : '—',

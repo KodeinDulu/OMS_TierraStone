@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Sales\Resources\Orders\Tables;
+namespace App\Filament\Mandor\Resources\Orders\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -56,11 +56,6 @@ class OrdersTable
             ])
             ->recordActions([
                 EditAction::make(),
-                DeleteAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                ]),
             ]);
     }
 }

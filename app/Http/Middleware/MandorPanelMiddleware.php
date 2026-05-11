@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Filament\Notifications\Notification;
 
-class SalesPanelMiddleware
+class MandorPanelMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,13 +16,13 @@ class SalesPanelMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && auth()->user()->hasAnyRole(['sales', 'admin'])) {
+        if (auth()->check() && auth()->user()->hasAnyRole(['mandor', 'admin'])) {
             return $next($request);
         }
 
         Notification::make()
             ->title('403 - Forbidden')
-            ->body('You do not have access to Sales panel.')
+            ->body('You do not have access to Mandor panel.')
             ->danger()
             ->send();
 

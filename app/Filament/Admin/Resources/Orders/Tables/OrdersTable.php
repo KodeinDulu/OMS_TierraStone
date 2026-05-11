@@ -24,9 +24,10 @@ class OrdersTable
                 TextColumn::make('status')->label('Status Pesanan')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'pending'          => 'warning',
+                        'indent'          => 'warning',
                         'on_progress'      => 'primary',
                         'ready_to_deliver' => 'success',
+                        'on_delivery'       => 'info',
                         'rejected'         => 'danger',
                         'done'             => 'gray',
                         default            => 'gray',
@@ -35,7 +36,7 @@ class OrdersTable
                     ->label('Status Pengerjaan')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'produksi'           => 'warning',
+                        'done'           => 'success',
                         'klasifikasi_besar'  => 'info',
                         'klasifikasi_sedang' => 'primary',
                         'klasifikasi_kecil'  => 'secondary',
@@ -51,9 +52,10 @@ class OrdersTable
                 TrashedFilter::make(),
                 SelectFilter::make('status')
                     ->options([
-                        'pending'          => 'Pending',
+                        'indent'          => 'Indent',
                         'on_progress'      => 'On Progress',
                         'ready_to_deliver' => 'Ready to Deliver',
+                        'on_delivery'       => 'On Delivery',
                         'rejected'         => 'Rejected',
                         'done'             => 'Done',
                     ]),

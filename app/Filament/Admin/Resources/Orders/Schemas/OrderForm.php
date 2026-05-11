@@ -59,13 +59,14 @@ class OrderForm
                             Select::make('status')
                                 ->label('Status Pesanan')
                                 ->options([
-                                    'pending'          => 'Pending',
+                                    'indent'          => 'Indent',
                                     'on_progress'      => 'On Progress',
                                     'ready_to_deliver' => 'Ready to Deliver',
+                                    'on_delivery'     => 'On Delivery',
                                     'rejected'         => 'Rejected',
                                     'done'             => 'Done',
                                 ])
-                                ->default('pending')
+                                ->default('indent')
                                 ->native(false)
                                 ->prefixIcon('heroicon-o-arrow-path')
                                 ->required(),
@@ -73,11 +74,11 @@ class OrderForm
                             Select::make('production_status')
                                 ->label('Status Pengerjaan')
                                 ->options([
-                                    'produksi'          => 'Produksi',
                                     'klasifikasi_besar' => 'Klasifikasi Besar',
                                     'klasifikasi_sedang'=> 'Klasifikasi Sedang',
                                     'klasifikasi_kecil' => 'Klasifikasi Kecil',
                                     'finishing'         => 'Finishing',
+                                    'done'              => 'Done',
                                 ])
                                 ->nullable()
                                 ->prefixIcon('heroicon-o-wrench')
@@ -123,11 +124,9 @@ class OrderForm
                                 ->placeholder('81234567890')
                                 ->disabled($isMandor),
 
-                            TextInput::make('customer_email')
-                                ->label('Email')
-                                ->email()
-                                ->prefixIcon('heroicon-o-envelope')
-                                ->placeholder('email@domain.com')
+                            TextInput::make('customer_address')
+                                ->label('Alamat')
+                                ->prefixIcon('heroicon-o-home')
                                 ->columnSpan(2)
                         ]),
                     ]),
@@ -177,21 +176,24 @@ class OrderForm
                                     ->numeric()
                                     ->required()
                                     ->prefixIcon('heroicon-o-arrows-right-left')
-                                    ->placeholder('0,0'),
+                                    ->placeholder('0,0')
+                                    ->suffix('cm'),
 
                                 TextInput::make('height')
-                                    ->label('Tinggi')
+                                    ->label('Panjang')
                                     ->numeric()
                                     ->required()
                                     ->prefixIcon('heroicon-o-arrows-up-down')
-                                    ->placeholder('0,0'),
+                                    ->placeholder('0,0')
+                                    ->suffix('cm'),
 
                                 TextInput::make('thickness')
                                     ->label('Ketebalan')
                                     ->numeric()
                                     ->required()
                                     ->placeholder('0,0')
-                                    ->prefixIcon('heroicon-o-arrows-up-down'),
+                                    ->prefixIcon('heroicon-o-arrows-up-down')
+                                    ->suffix('cm'),
 
                                 TextInput::make('quantity_pcs')
                                     ->label('Jumlah (pcs)')
@@ -204,7 +206,6 @@ class OrderForm
                                 TextInput::make('quantity_sqm')
                                     ->label('Jumlah (m²)')
                                     ->numeric()
-                                    ->required()
                                     ->prefixIcon('heroicon-o-calculator')
                                     ->placeholder('0,0')
                                     ->suffix('m²'),

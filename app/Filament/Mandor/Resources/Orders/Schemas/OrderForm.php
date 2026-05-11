@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Sales\Resources\Orders\Schemas;
+namespace App\Filament\Mandor\Resources\Orders\Schemas;
 
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Section;

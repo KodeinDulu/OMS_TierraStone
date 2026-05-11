@@ -27,7 +27,16 @@ class AdminPanelMiddleware
                 ->danger()
                 ->send();
 
-            return redirect('/sales');
+            if (auth()->user()->hasRole('sales')) {
+                return redirect('/sales');
+            }
+
+             if (auth()->user()->hasRole('mandor')) {
+                return redirect('/mandor');
+
+            }
+
+            return redirect('/');
         }
 
         return $next($request);
