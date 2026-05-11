@@ -795,13 +795,6 @@
                                     <div class="img-preview-strip" id="img-preview-strip"></div>
                                 </div>
 
-                                <!-- Catatan Item -->
-                                <div class="field" style="margin-bottom:0">
-                                    <label class="label" style="font-size:13px">Catatan Item <span class="label-opt">(opsional)</span></label>
-                                    <input type="text" id="item-catatan" class="input"
-                                        placeholder="Warna, motif, atau keterangan khusus item ini...">
-                                </div>
-
                                 <div class="error-box shake" id="item-error">
                                     <i class="fa-solid fa-circle-exclamation"></i>
                                     <span id="item-err-msg"></span>
@@ -1035,7 +1028,6 @@
             document.getElementById('width').value      = it.width;
             document.getElementById('thickness').value  = it.thickness || '';
             document.getElementById('luas').value       = it.luas || '';
-            document.getElementById('item-catatan').value = it.catatan || '';
 
             document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
             document.getElementById('finishing').value = '';
@@ -1055,7 +1047,6 @@
             document.getElementById('width').value        = '';
             document.getElementById('thickness').value    = '';
             document.getElementById('luas').value         = '';
-            document.getElementById('item-catatan').value = '';
             document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
             document.getElementById('finishing').value    = '';
             selectedFinishing = '';
@@ -1088,7 +1079,6 @@
             thickness: document.getElementById('thickness').value.trim(),
             luas:      document.getElementById('luas').value.trim(),
             finishing: getFinishingValue(),
-            catatan:   document.getElementById('item-catatan').value.trim(),
         };
 
         const idxVal = document.getElementById('edit-item-idx').value;
@@ -1118,7 +1108,7 @@
             if (it.thickness) detail += `, tebal ${it.thickness} cm`;
             if (it.luas && it.luas !== '') detail += ` · ${it.luas} m²`;
             if (it.finishing) detail += ` · ${it.finishing}`;
-            if (it.catatan)   detail += ` · "${it.catatan}"`;
+        
 
             const row = document.createElement('div');
             row.className = 'item-row';
@@ -1220,7 +1210,6 @@
             if (it.luas && it.luas !== '') dimStr += ` · Luas: ${it.luas} m²`;
             let detail = dimStr;
             if (it.finishing) detail += ` · Finishing: ${it.finishing}`;
-            if (it.catatan)   detail += ` · Catatan: ${it.catatan}`;
 
             const row = document.createElement('div');
             row.className = 'sum-item-row';
@@ -1303,7 +1292,6 @@
             itemsText += `  Jumlah   : ${it.qty} buah\n`;
             itemsText += `  Dimensi  : ${dimLine}\n`;
             if (it.finishing) itemsText += `  Finishing: ${it.finishing}\n`;
-            if (it.catatan)   itemsText += `  Catatan  : ${it.catatan}\n`;
         });
 
         const msg =

@@ -108,7 +108,6 @@ class OrderController extends Controller
             'items.*.thickness' => 'nullable|numeric|min:0',
             'items.*.luas'      => 'nullable|numeric|min:0',
             'items.*.finishing' => 'nullable|string',
-            'items.*.catatan'   => 'nullable|string|max:500',
         ]);
  
         // Bersihkan nomor HP: strip +62 atau 62 di depan, simpan tanpa awalan
