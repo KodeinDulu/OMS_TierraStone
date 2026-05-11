@@ -1109,7 +1109,6 @@
                 return showItemErr(`File terlalu besar (maks. 2MB): ${names}`);
             }
 
-
             const idxVal = document.getElementById('edit-item-idx').value;
             const existingFiles = (idxVal !== '' && orderItems[parseInt(idxVal)]?.images) ?
                 orderItems[parseInt(idxVal)].images : [];
