@@ -28,6 +28,7 @@ class MandorPanelProvider extends PanelProvider
             ->id('mandor')
             ->path('mandor')
             ->brandName('Tierra Stone')
+            ->profile()
             ->login()
             ->authGuard('web')
             ->registration(false)

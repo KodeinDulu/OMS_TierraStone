@@ -32,6 +32,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin') // URL: website.com/admin
             ->brandName('Tierra Stone')
+            ->profile()
             ->login()
             ->authGuard('web')
             ->registration(false)

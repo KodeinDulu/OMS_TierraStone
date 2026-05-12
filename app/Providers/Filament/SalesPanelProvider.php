@@ -29,6 +29,7 @@ class SalesPanelProvider extends PanelProvider
             ->id('sales')
             ->path('sales')
             ->brandName('Tierra Stone')
+            ->profile()
             ->default()
             ->login()
             ->authGuard('web')
