@@ -449,7 +449,7 @@
             $unitPrice = $item->unit_price ?? 0;
             $pcs = $item->quantity_pcs ?? 0;
             $sqm = $item->quantity_sqm ?? 0;
-            $lineTotal = $unitPrice * $sqm;
+            $lineTotal = $unitPrice * $pcs;
             $stoneName = $item->stoneType?->name ?? ('Item #' . ($i + 1));
             $size = ($item->width && $item->height) ? $item->width . 'x' . $item->height : '—';
             @endphp

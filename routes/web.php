@@ -14,3 +14,4 @@ Route::get('/order', [OrderController::class, 'create'])->name('order');
 Route::get('/lacak', [OrderController::class, 'track'])->name('orders.track');
 
 
+Route::post('/order', [OrderController::class, 'store'])->name('order.store');

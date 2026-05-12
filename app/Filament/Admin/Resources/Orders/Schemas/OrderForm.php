@@ -246,7 +246,11 @@ class OrderForm
                             ->maxSize(2048)
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                             ->helperText('Format: JPG, PNG, WEBP. Maksimal 2MB.')
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->downloadable()   
+                            ->openable()         
+                            ->deletable()        
+                            ->moveFiles(),    
                     ]),
 
             ]);

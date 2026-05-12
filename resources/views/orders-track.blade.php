@@ -105,6 +105,8 @@
 
                 <!-- RIGHT -->
                 <div class="modal-right">
+
+                    <!-- Customer -->
                     <div class="modal-section">
                         <div class="modal-section-title">Customer</div>
                         <div class="modal-customer-wrap">
@@ -114,7 +116,35 @@
                                 <div class="modal-customer-phone" id="m-phone">—</div>
                             </div>
                         </div>
+                        <div id="m-address-wrap" style="display:none; align-items:flex-start; gap:6px; margin-top:10px;">
+                            <i class="fa-solid fa-location-dot" style="font-size:13px; margin-right:4px; margin-top:2px; opacity:.5;"></i>
+                            <span id="m-address" style="font-size:13px; opacity:.6; line-height:1.5;"></span>
+                        </div>
                     </div>
+
+                    <!-- Info Pesanan -->
+                    <div class="modal-section" style="margin-top:16px;">
+                        <div class="modal-section-title">Info Pesanan</div>
+                        <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+                            <div style="display:flex; justify-content:space-between; font-size:13px;">
+                                <span style="opacity:.6;"><i class="fa-solid fa-box" style="margin-right:6px;"></i>Total Item</span>
+                                <span id="m-total-items" style="font-weight:500;">—</span>
+                            </div>
+                            <div id="m-sqm-row" style="display:none; justify-content:space-between; font-size:13px;">
+                                <span style="opacity:.6;"><i class="fa-solid fa-ruler-combined" style="margin-right:6px;"></i>Total Luas</span>
+                                <span id="m-total-sqm" style="font-weight:500;">—</span>
+                            </div>
+                            <div id="m-pcs-row" style="display:none; justify-content:space-between; font-size:13px;">
+                                <span style="opacity:.6;"><i class="fa-solid fa-cubes" style="margin-right:6px;"></i>Total Qty</span>
+                                <span id="m-total-pcs" style="font-weight:500;">—</span>
+                            </div>
+                            <div id="m-est-row" style="display:none; justify-content:space-between; font-size:13px;">
+                                <span style="opacity:.6;"><i class="fa-solid fa-calendar-check" style="margin-right:6px;"></i>Est. Selesai</span>
+                                <span id="m-est-date" style="font-weight:500;">—</span>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
@@ -123,15 +153,10 @@
 
     <script>
         const STATUS_CONFIG = {
-            pending: {
-                label: 'Pending',
-                icon: 'fa-clock',
+            indent: {
+                label: 'Indent',
+                icon: 'fa-hourglass-start',
                 cls: 'badge-pending'
-            },
-            production: {
-                label: 'Production',
-                icon: 'fa-industry',
-                cls: 'badge-production'
             },
             on_progress: {
                 label: 'On Progress',
@@ -142,6 +167,11 @@
                 label: 'Ready to Deliver',
                 icon: 'fa-box-open',
                 cls: 'badge-ready_to_send'
+            },
+            on_delivery: {
+                label: 'On Delivery',
+                icon: 'fa-truck',
+                cls: 'badge-production'
             },
             rejected: {
                 label: 'Rejected',
@@ -155,7 +185,7 @@
             },
         };
 
-        const STATUS_FLOW = ['pending', 'production', 'on_progress', 'ready_to_deliver', 'done'];
+        const STATUS_FLOW = ['indent', 'on_progress', 'ready_to_deliver', 'on_delivery', 'done'];
 
         let cachedOrders = [];
 
@@ -313,28 +343,71 @@
                 noteWrap.style.display = 'none';
             }
 
+            // Alamat
+            const addrWrap = document.getElementById('m-address-wrap');
+            if (o.address) {
+                addrWrap.style.display = 'flex';
+                addrWrap.style.alignItems = 'flex-start';
+                document.getElementById('m-address').textContent = o.address;
+            } else {
+                addrWrap.style.display = 'none';
+            }
+
+            // Total items
+            document.getElementById('m-total-items').textContent = o.items.length + ' item';
+
+            // Total sqm
+            const totalSqm = o.items.reduce((s, it) => s + (parseFloat(it.qty_sqm) || 0), 0);
+            const sqmRow = document.getElementById('m-sqm-row');
+            if (totalSqm > 0) {
+                sqmRow.style.display = 'flex';
+                document.getElementById('m-total-sqm').textContent = totalSqm.toFixed(2) + ' m²';
+            } else {
+                sqmRow.style.display = 'none';
+            }
+
+            // Total pcs
+            const totalPcs = o.items.reduce((s, it) => s + (parseInt(it.qty_pcs) || 0), 0);
+            const pcsRow = document.getElementById('m-pcs-row');
+            if (totalPcs > 0) {
+                pcsRow.style.display = 'flex';
+                document.getElementById('m-total-pcs').textContent = totalPcs + ' pcs';
+            } else {
+                pcsRow.style.display = 'none';
+            }
+
+            // Estimated finish date
+            const estRow = document.getElementById('m-est-row');
+            if (o.estimated_finish_date) {
+                estRow.style.display = 'flex';
+                document.getElementById('m-est-date').textContent = o.estimated_finish_date;
+            } else {
+                estRow.style.display = 'none';
+            }
+
             // Item cards
             document.getElementById('m-items-list').innerHTML = o.items.map(it => {
-                const qtyVal = (it.qty_sqm != null && it.qty_sqm > 0) ? it.qty_sqm : it.qty_pcs;
-                const qtyUnit = (it.qty_sqm != null && it.qty_sqm > 0) ? 'm²' : 'pcs';
+                const qtyVal = (it.qty_sqm != null && parseFloat(it.qty_sqm) > 0) ? parseFloat(it.qty_sqm).toFixed(2) : it.qty_pcs;
+                const qtyUnit = (it.qty_sqm != null && parseFloat(it.qty_sqm) > 0) ? 'm²' : 'pcs';
                 const metaParts = [];
                 if (it.dimensi && it.dimensi !== '—') metaParts.push(`<span><i class="fa-solid fa-ruler-combined"></i> ${it.dimensi}</span>`);
                 if (it.finishing && it.finishing !== '—') metaParts.push(`<span><i class="fa-solid fa-wand-magic-sparkles"></i> ${it.finishing}</span>`);
+                if (it.unit_price) metaParts.push(`<span><i class="fa-solid fa-tag"></i> ${Number(it.unit_price).toLocaleString('id-ID', {style:'currency', currency:'IDR', maximumFractionDigits:0})}</span>`);
 
                 return `
-                <div class="item-card">
-                    <div class="item-card-header">
-                        <div class="item-card-icon"><i class="fa-solid fa-gem"></i></div>
-                        <div class="item-card-info">
-                            <div class="item-card-name">${it.stone}</div>
-                            ${metaParts.length ? `<div class="item-card-meta">${metaParts.join('')}</div>` : ''}
-                        </div>
-                        <div class="item-card-qty-wrap">
-                            <div class="item-card-qty">${qtyVal}</div>
-                            <div class="item-card-qty-unit">${qtyUnit}</div>
-                        </div>
-                    </div>
-                </div>`;
+        <div class="item-card">
+            <div class="item-card-header">
+                <div class="item-card-icon"><i class="fa-solid fa-gem"></i></div>
+                <div class="item-card-info">
+                    <div class="item-card-name">${it.stone}</div>
+                    ${metaParts.length ? `<div class="item-card-meta">${metaParts.join('')}</div>` : ''}
+                </div>
+                <div class="item-card-qty-wrap">
+                    <div class="item-card-qty">${qtyVal}</div>
+                    <div class="item-card-qty-unit">${qtyUnit}</div>
+                </div>
+            </div>
+        </div>`;
             }).join('');
 
             document.getElementById('m-global-timeline').innerHTML = buildTimelineHtml(o.status);
