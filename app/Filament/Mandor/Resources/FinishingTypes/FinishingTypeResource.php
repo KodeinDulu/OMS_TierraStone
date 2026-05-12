@@ -41,7 +41,6 @@ class FinishingTypeResource extends Resource
     {
         return [
             'index' => ListFinishingTypes::route('/'),
-            'create' => CreateFinishingType::route('/create'),
             'edit' => EditFinishingType::route('/{record}/edit'),
         ];
     }
