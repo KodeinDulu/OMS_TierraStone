@@ -744,7 +744,7 @@
                                         <label class="label" style="font-size:13px">Jumlah Batu <span class="req">*</span></label>
                                         <div class="qty-row">
                                             <input type="number" id="qty" class="input" placeholder="1" min="1" value="1" style="max-width:120px">
-                                            <span class="qty-unit">lembar / buah</span>
+                                            <span class="qty-unit">pcs</span>
                                         </div>
                                     </div>
 

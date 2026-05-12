@@ -65,30 +65,29 @@ class OrderController extends Controller
             ->get()
             ->map(function ($order) {
                 $firstItem = $order->items->first();
-
                 return [
-                    'id'        => $order->order_code,
-                    'nama'      => $order->customer_name,
-                    'phone'     => $order->customer_phone ? '+62' . $order->customer_phone : '—',
-                    'address'   => $order->customer_address,
-                    'produk'    => $firstItem?->stoneType?->name ?? '—',
-                    'finishing' => $firstItem?->finishing ?? '—',
-                    'dimensi'   => $firstItem ? "{$firstItem->width} × {$firstItem->height}" . ($firstItem->thickness ? " × {$firstItem->thickness}" : '') : '—',
-                    'qty_pcs'   => $order->items->sum('quantity_pcs'),
-                    'qty_sqm'   => $order->items->sum('quantity_sqm'),
-                    'status'    => $order->status,
-                    'production_status' => $order->production_status,
-                    'catatan'   => $order->notes,
-                    'tanggal'   => $order->created_at->format('d M Y'),
-                    'items'     => $order->items->map(fn($item) => [
-                        'stone'     => $item->stoneType?->name ?? '—',
-                        'finishing' => $item->finishing ?? '—',
-                        'dimensi'   => "{$item->width} × {$item->height}" . ($item->thickness ? " × {$item->thickness}" : ''),
-                        'qty_pcs'   => $item->quantity_pcs,
-                        'qty_sqm'   => $item->quantity_sqm,
+                    'id'                    => $order->order_code,
+                    'nama'                  => $order->customer_name,
+                    'phone'                 => $order->customer_phone ? '+62' . $order->customer_phone : '—',
+                    'address'               => $order->customer_address,         
+                    'produk'                => $firstItem?->stoneType?->name ?? '—',
+                    'qty_pcs'               => $order->items->sum('quantity_pcs'),
+                    'qty_sqm'               => $order->items->sum('quantity_sqm'),
+                    'status'                => $order->status,
+                    'catatan'               => $order->notes,
+                    'tanggal'               => $order->created_at->format('d M Y'),
+                    'estimated_finish_date' => $order->estimated_finish_date?->format('d M Y'), 
+                    'items'                 => $order->items->map(fn($item) => [
+                        'stone'      => $item->stoneType?->name ?? '—',
+                        'finishing'  => $item->finishingType?->name ?? '—',       
+                        'dimensi'    => "{$item->width} × {$item->height}" . ($item->thickness ? " × {$item->thickness}" : ''),
+                        'qty_pcs'    => $item->quantity_pcs,
+                        'qty_sqm'    => $item->quantity_sqm,
+                        'unit_price' => $item->unit_price,                        
                     ]),
                 ];
-            });
+            })
+            ;
 
         return response()->json($orders);
     }
