@@ -393,6 +393,17 @@ body {
     gap: 8px;
 }
 
+.itl-label-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.itl-time {
+    font-size: 11px;
+    opacity: 0.45;
+}
+
 .modal-meta-row {
     display: flex;
     justify-content: space-between;

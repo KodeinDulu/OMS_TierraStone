@@ -51,7 +51,7 @@ class OrderController extends Controller
 
         $isPhone = preg_match('/^\d{8,14}$/', $phoneQuery);
 
-        $orders = Order::with('items.stoneType')
+        $orders = Order::with('items.stoneType', 'statusHistories')
         ->where(function ($query) use ($q, $phoneQuery, $isPhone) {
             $query->where('order_code', 'LIKE', "%{$q}%")
             ->orWhere('customer_name', 'LIKE', "%{$q}%");
@@ -85,6 +85,11 @@ class OrderController extends Controller
                         'qty_sqm'    => $item->quantity_sqm,
                         'unit_price' => $item->unit_price,                        
                     ]),
+                'status_history' => $order->statusHistories->map(fn($h) => [
+                    'status'     => $h->status,
+                    'changed_at' => $h->changed_at->format('d M Y, H:i'),
+                    'changed_by' => $h->changedBy?->name ?? 'System',
+                ]),
                 ];
             })
             ;

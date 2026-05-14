@@ -41,4 +41,9 @@ class Order extends Model
             $this->reference_image
         );
     }
+
+    public function statusHistories()
+    {
+        return $this->hasMany(OrderStatusHistory::class)->orderBy('changed_at');
+    }
 }

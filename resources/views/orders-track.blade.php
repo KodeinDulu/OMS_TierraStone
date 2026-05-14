@@ -260,13 +260,20 @@
             </div>`;
         }
 
-        function buildTimelineHtml(status) {
+        function buildTimelineHtml(status, statusHistory = []) {
             const currentIdx = STATUS_FLOW.indexOf(status);
             const isRejected = status === 'rejected';
+
+            // Buat map: status => changed_at
+            const historyMap = {};
+            statusHistory.forEach(h => {
+                historyMap[h.status] = h.changed_at;
+            });
 
             const steps = STATUS_FLOW.map((s, i) => {
                 if (isRejected) {
                     return {
+                        key: s,
                         label: s === 'done' ? 'Rejected' : STATUS_CONFIG[s].label,
                         done: i === 0,
                         active: false,
@@ -274,6 +281,7 @@
                     };
                 }
                 return {
+                    key: s,
                     label: STATUS_CONFIG[s].label,
                     done: i < currentIdx,
                     active: i === currentIdx,
@@ -297,20 +305,27 @@
 
                 const icon = t.done ? '<i class="fa-solid fa-check"></i>' :
                     t.reject ? '<i class="fa-solid fa-xmark"></i>' :
-                    t.active ? '<i class="fa-solid fa-circle" style="font-size:7px"></i>' :
+                    t.active ? '<i class="fa-solid fa-circle" style="font-size:7px"></i>' : '';
+
+                // Tampilkan timestamp kalau ada di history
+                const timestamp = historyMap[t.reject ? 'rejected' : t.key];
+                const timeHtml = (t.done || t.active || t.reject) && timestamp ?
+                    `<span style="font-size:11px; opacity:0.5; display:block;">${timestamp}</span>` :
                     '';
 
-                const lineActive = i < steps.length - 1 && (steps[i + 1].done || steps[i + 1].active);
                 const lineCls = i < steps.length - 1 ?
                     `itl-line ${steps[i].done ? 'done' : steps[i].active ? 'active' : ''}` :
                     '';
 
                 return `
-                <div class="itl-step">
-                    <div class="itl-dot ${dotCls}">${icon}</div>
-                    <span class="itl-label ${labelCls}">${t.label}</span>
-                </div>
-                ${i < steps.length - 1 ? `<div class="${lineCls}"></div>` : ''}`;
+<div class="itl-step">
+    <div class="itl-dot ${dotCls}">${icon}</div>
+    <div style="display:flex; flex-direction:column; gap:2px;">
+        <span class="itl-label ${labelCls}">${t.label}</span>
+        ${timeHtml}
+    </div>
+</div>
+       ${i < steps.length - 1 ? `<div class="${lineCls}"></div>` : ''}`;
             }).join('');
 
             return `<div class="item-timeline">${stepsHtml}</div>`;
@@ -410,7 +425,7 @@
         </div>`;
             }).join('');
 
-            document.getElementById('m-global-timeline').innerHTML = buildTimelineHtml(o.status);
+            document.getElementById('m-global-timeline').innerHTML = buildTimelineHtml(o.status, o.status_history || []);
 
             document.getElementById('modal-overlay').classList.add('open');
             document.body.style.overflow = 'hidden';
