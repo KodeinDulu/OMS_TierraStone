@@ -6,7 +6,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages\Dashboard;
+use App\Filament\Mandor\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -41,9 +41,9 @@ class MandorPanelProvider extends PanelProvider
                 'primary' => Color::Amber,
             ])
             ->discoverResources(in: app_path('Filament/Mandor/Resources'), for: 'App\Filament\Mandor\Resources')
-            ->discoverPages(in: app_path('Filament/Mandor/Pages'), for: 'App\Filament\Mandor\Pages')
+            // ->discoverPages(in: app_path('Filament/Mandor/Pages'), for: 'App\Filament\Mandor\Pages')
             ->pages([
-                Dashboard::class,
+                \App\Filament\Mandor\Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Mandor/Widgets'), for: 'App\Filament\Mandor\Widgets')
             ->widgets([
