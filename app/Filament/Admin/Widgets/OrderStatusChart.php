@@ -11,7 +11,7 @@ class OrderStatusChart extends ChartWidget
 
     protected function getData(): array
     {
-        $statuses = ['pending', 'on_progress', 'ready_to_deliver', 'on_deliver'];
+        $statuses = ['indent', 'on_progress', 'ready_to_deliver', 'on_deliver'];
 
         $data = [];
         $labels = [];
@@ -20,7 +20,7 @@ class OrderStatusChart extends ChartWidget
             $count = Order::where('status', $status)->count();
             $data[] = $count;
             $labels[] = match($status) {
-                'pending'           => 'Pending',
+                'indent'           => 'Indent',
                 'on_progress'       => 'On Progress',
                 'ready_to_deliver'  => 'Ready to Deliver',
                 'on_deliver'        => 'On Deliver',
@@ -32,7 +32,7 @@ class OrderStatusChart extends ChartWidget
                 [
                     'data'            => $data,
                     'backgroundColor' => [
-                        '#f59e0b', // pending - amber
+                        '#f59e0b', // indent - amber
                         '#8b5cf6', // on_progress - purple
                         '#10b981', // ready_to_deliver - green
                         '#3b82f6', // on_deliver - blue

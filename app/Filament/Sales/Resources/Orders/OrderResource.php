@@ -53,11 +53,6 @@ class OrderResource extends Resource
         ];
     }
 
-    public static function canCreate(): bool
-    {
-        return auth()->user()->hasRole('sales');
-    }
-
     public static function canDelete($record): bool
     {
         return false;
