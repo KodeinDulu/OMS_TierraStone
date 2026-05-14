@@ -1,3 +1,4 @@
+<!-- halaman utama customer -->
 <!DOCTYPE html>
 <html lang="id">
 
