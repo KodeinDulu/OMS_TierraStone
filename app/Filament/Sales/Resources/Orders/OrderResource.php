@@ -32,7 +32,9 @@ class OrderResource extends Resource
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
-        return parent::getEloquentQuery();
+        return parent::getEloquentQuery()
+        ->withTrashed()
+        ->whereNotIn('status', ['done', 'rejected']);
     }
 
     public static function getRelations(): array

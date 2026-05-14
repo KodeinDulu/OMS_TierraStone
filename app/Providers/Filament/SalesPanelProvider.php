@@ -34,6 +34,10 @@ class SalesPanelProvider extends PanelProvider
             ->login()
             ->authGuard('web')
             ->registration(false)
+            ->resources([
+                \App\Filament\Sales\Resources\Orders\OrderResource::class,
+                \App\Filament\Sales\Resources\CompletedOrders\CompletedOrderResource::class,
+            ])
             ->colors([
                 'primary' => Color::Amber,
             ])

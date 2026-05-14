@@ -38,6 +38,7 @@ class AdminPanelProvider extends PanelProvider
             ->registration(false)
             ->resources([
                 \App\Filament\Admin\Resources\Orders\OrderResource::class,
+                \App\Filament\Admin\Resources\CompletedOrders\CompletedOrderResource::class,
                 \App\Filament\Admin\Resources\Users\UserResource::class,
                 \App\Filament\Admin\Resources\StoneTypes\StoneTypeResource::class,
                 \App\Filament\Admin\Resources\FinishingTypes\FinishingTypeResource::class

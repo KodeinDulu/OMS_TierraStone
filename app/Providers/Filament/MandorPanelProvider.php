@@ -34,6 +34,7 @@ class MandorPanelProvider extends PanelProvider
             ->registration(false)
             ->resources([
                 \App\Filament\Mandor\Resources\Orders\OrderResource::class,
+                \App\Filament\Mandor\Resources\CompletedOrders\CompletedOrderResource::class,
                 \App\Filament\Mandor\Resources\StoneTypes\StoneTypeResource::class,
                 \App\Filament\Mandor\Resources\FinishingTypes\FinishingTypeResource::class,
             ])
