@@ -33,7 +33,7 @@
             <a href="#provides" class="nav-link">Provides</a>
             <a href="#about" class="nav-link">About</a>
         </div>
-        <a href="{{ route('order') }}" class="nav-order">Order</a>
+        <a href="{{ route('orders.track') }}" class="nav-order">Lacak</a>
         <button class="nav-mobile-toggle" id="navToggle" aria-label="Menu">
             <span></span><span></span><span></span>
         </button>
