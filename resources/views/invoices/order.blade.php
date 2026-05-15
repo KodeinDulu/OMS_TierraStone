@@ -367,6 +367,7 @@
 <body>
 
     @php
+    $subtotal = $items->sum(fn($item) => ($item->unit_price ?? 0) * ($item->quantity_pcs ?? 0));
     $freight = $order->freight ?? 0;
     $grandTotal = $subtotal + $freight;
     @endphp
