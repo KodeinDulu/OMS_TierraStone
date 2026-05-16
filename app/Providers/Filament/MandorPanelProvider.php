@@ -27,7 +27,7 @@ class MandorPanelProvider extends PanelProvider
         return $panel
             ->id('mandor')
             ->path('mandor')
-            ->brandName('Tierra Stone')
+            ->brandName('Tierra Stone - Mandol Panel')
             ->profile()
             ->login()
             ->authGuard('web')

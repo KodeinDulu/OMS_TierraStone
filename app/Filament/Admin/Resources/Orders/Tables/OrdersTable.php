@@ -9,7 +9,6 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TrashedFilter;
 use Illuminate\Database\Eloquent\Builder;
 
 class OrdersTable
@@ -45,11 +44,11 @@ class OrdersTable
                     ->placeholder('-')
                     ->sortable(),
                 TextColumn::make('updatedBy.name')->label('Updated By')->default('-'),
-                TextColumn::make('created_at')->dateTime(),
+                TextColumn::make('estimated_finish_date')->label('Estimasi Selesai')->date('d M Y')->sortable(),
+                TextColumn::make('created_at')->dateTime()->sortable(),
             ])
 
             ->filters([
-                TrashedFilter::make(),
                 SelectFilter::make('status')
                     ->options([
                         'indent'          => 'Indent',

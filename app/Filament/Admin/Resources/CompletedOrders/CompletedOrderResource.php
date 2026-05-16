@@ -26,7 +26,6 @@ class CompletedOrderResource extends Resource
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         return parent::getEloquentQuery()
-            ->withTrashed()
             ->whereIn('status', ['done', 'rejected']);
     }
 

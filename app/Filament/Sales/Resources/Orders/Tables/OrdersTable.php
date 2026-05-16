@@ -41,7 +41,8 @@ class OrdersTable
                     })
                     ->placeholder('-')
                     ->sortable(),
-                TextColumn::make('created_at')->dateTime(),
+                TextColumn::make('estimated_finish_date')->label('Estimasi Selesai')->date('d M Y')->sortable(),
+                TextColumn::make('created_at')->dateTime()->sortable(),
             ])
             ->filters([
                 SelectFilter::make('status')

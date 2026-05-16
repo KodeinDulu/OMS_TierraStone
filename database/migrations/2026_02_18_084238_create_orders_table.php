@@ -32,7 +32,6 @@ return new class extends Migration
             $table->json('reference_image')->nullable();
             $table->decimal('freight', 12, 2)->default(0);
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->softDeletes();
             $table->timestamps();
         });
     }

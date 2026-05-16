@@ -28,7 +28,7 @@ class SalesPanelProvider extends PanelProvider
         return $panel
             ->id('sales')
             ->path('sales')
-            ->brandName('Tierra Stone')
+            ->brandName('Tierra Stone - Sales Panel')
             ->profile()
             ->default()
             ->login()

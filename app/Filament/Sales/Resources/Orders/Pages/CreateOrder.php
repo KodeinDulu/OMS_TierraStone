@@ -11,7 +11,7 @@ class CreateOrder extends CreateRecord
 
     public static function canAccess(array $parameters = []): bool
     {
-        return auth()->user()->hasRole('sales');
+        return auth()->user()->hasAnyRole(['sales', 'admin']);
     }
 
     // Auto-assign sales_id before saving
