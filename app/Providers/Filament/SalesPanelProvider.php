@@ -44,11 +44,12 @@ class SalesPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Sales/Resources'), for: 'App\Filament\Sales\Resources')
             // ->discoverPages(in: app_path('Filament/Sales/Pages'), for: 'App\Filament\Sales\Pages')
             ->pages([
-                \App\Filament\Sales\Pages\Dashboard::class,
+                Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Sales/Widgets'), for: 'App\Filament\Sales\Widgets')
             ->widgets([
                 AccountWidget::class,
+                \App\Filament\Sales\Widgets\SalesDashboard::class,
             ])
             ->middleware([
                 EncryptCookies::class,

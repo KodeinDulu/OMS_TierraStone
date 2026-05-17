@@ -49,6 +49,7 @@ class MandorPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Mandor/Widgets'), for: 'App\Filament\Mandor\Widgets')
             ->widgets([
                 AccountWidget::class,
+                \App\Filament\Sales\Widgets\SalesDashboard::class,
             ])
             ->middleware([
                 EncryptCookies::class,

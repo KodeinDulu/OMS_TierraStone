@@ -89,7 +89,7 @@ class OrderForm
                                 ->numeric()
                                 ->nullable()
                                 ->required()
-                                ->min(0)
+                                ->minValue(0)
                                 ->default(0)
                                 ->prefixIcon('heroicon-o-truck')
                                 ->prefix('Rp')
@@ -180,7 +180,7 @@ class OrderForm
                                     ->label('Lebar')
                                     ->numeric()
                                     ->required()
-                                    ->min(0)
+                                    ->minValue(0)
                                     ->prefixIcon('heroicon-o-arrows-right-left')
                                     ->placeholder('0,0')
                                     ->suffix('cm'),
@@ -189,7 +189,7 @@ class OrderForm
                                     ->label('Panjang')
                                     ->numeric()
                                     ->required()
-                                    ->min(0)
+                                    ->minValue(0)
                                     ->prefixIcon('heroicon-o-arrows-up-down')
                                     ->placeholder('0,0')
                                     ->suffix('cm'),
@@ -198,7 +198,7 @@ class OrderForm
                                     ->label('Ketebalan')
                                     ->numeric()
                                     ->required()
-                                    ->min(0)
+                                    ->minValue(0)
                                     ->placeholder('0,0')
                                     ->prefixIcon('heroicon-o-arrows-up-down')
                                     ->suffix('cm'),
@@ -214,7 +214,7 @@ class OrderForm
                                 TextInput::make('quantity_sqm')
                                     ->label('Jumlah (m²)')
                                     ->numeric()
-                                    ->min(0)
+                                    ->minValue(0)
                                     ->prefixIcon('heroicon-o-calculator')
                                     ->placeholder('0,0')
                                     ->suffix('m²'),
@@ -222,7 +222,7 @@ class OrderForm
                                 TextInput::make('unit_price')
                                     ->label('Harga Satuan (Rp)')
                                     ->numeric()
-                                    ->min(0)
+                                    ->minValue(0)
                                     ->prefixIcon('heroicon-o-banknotes')
                                     ->prefix('Rp')
                                     ->placeholder('0')
