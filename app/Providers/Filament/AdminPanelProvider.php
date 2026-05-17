@@ -53,7 +53,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\Filament\Admin\Widgets')
             ->widgets([
-                OrderSummaryTable::class,
+                AccountWidget::class,
                 \App\Filament\Sales\Widgets\SalesDashboard::class,
             ])
             ->middleware([
