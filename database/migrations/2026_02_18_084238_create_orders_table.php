@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->string('order_code')->unique(); // search purpose
-            $table->foreignId('sales_id')->constrained('users')->restrictOnDelete();;
+            $table->foreignId('sales_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('customer_name');
             $table->string('customer_phone')->nullable();
             $table->string('customer_address')->nullable();
