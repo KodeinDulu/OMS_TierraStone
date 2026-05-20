@@ -37,8 +37,7 @@ class CompletedOrderResource extends Resource
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         return parent::getEloquentQuery()
-            ->whereIn('status', ['done', 'rejected'])
-            ->where('sales_id', auth()->id());
+            ->whereIn('status', ['done', 'rejected']);
     }
 
     public static function getRelations(): array

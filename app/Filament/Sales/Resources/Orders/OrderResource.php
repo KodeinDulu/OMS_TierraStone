@@ -33,7 +33,11 @@ class OrderResource extends Resource
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         return parent::getEloquentQuery()
-        ->whereNotIn('status', ['done', 'rejected']);
+            ->where(function ($query) {
+                $query->where('sales_id', auth()->id())
+                      ->orWhereNull('sales_id');
+            })
+            ->whereNotIn('status', ['done', 'rejected']);
     }
 
     public static function getRelations(): array

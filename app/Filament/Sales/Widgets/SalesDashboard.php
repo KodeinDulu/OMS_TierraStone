@@ -18,9 +18,18 @@ class SalesDashboard extends Widget
     public function getViewData(): array
     {
         $salesId = auth()->id();
+        $isSalesRole = auth()->user()->hasRole('sales');
 
-        $orders = Order::where('sales_id', $salesId)
-            ->whereNotIn('status', ['done', 'rejected'])
+        $query = Order::query();
+
+        if ($isSalesRole) {
+            $query->where(function ($q) use ($salesId) {
+                $q->where('sales_id', $salesId)
+                  ->orWhereNull('sales_id');
+            });
+        }
+
+        $orders = $query->whereNotIn('status', ['done', 'rejected'])
             ->orderBy('estimated_finish_date')
             ->get()
             ->map(function ($order) {
