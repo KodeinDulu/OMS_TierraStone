@@ -5,7 +5,7 @@
     <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
         @foreach([
             ['label'=>'Total order', 'value'=>$total,    'color'=>'#6B7280'],
-            ['label'=>'Pending',     'value'=>$pending,  'color'=>'#F59E0B'],
+            ['label'=>'Indent',     'value'=>$indent,  'color'=>'#F59E0B'],
             ['label'=>'Tenggat dekat','value'=>$due_soon,'color'=>'#EF4444'],
             ['label'=>'Siap kirim',  'value'=>$ready,    'color'=>'#10B981'],
         ] as $s)
@@ -28,7 +28,7 @@
                 <select wire:model.live="statusFilter"
                     style="font-size:12px;padding:6px 12px;border-radius:6px;border:1px solid #E5E7EB;background:#FFFFFF;color:#1F2937;cursor:pointer;font-weight:500">
                     <option value="">Semua status</option>
-                    <option value="pending">Pending</option>
+                    <option value="indent">Indent</option>
                     <option value="production">Production</option>
                     <option value="on_progress">On Progress</option>
                     <option value="ready_to_deliver">Ready to Deliver</option>
@@ -53,7 +53,7 @@
                         default       => [(int)$days.'h lagi', 'var(--color-text-success)'],
                     };
                     [$badgeBg, $badgeColor, $statusLabel] = match($order['status']) {
-                        'pending'          => ['#FAEEDA','#633806','Pending'],
+                        'indent'          => ['#FAEEDA','#633806','Indent'],
                         'production'       => ['#E6F1FB','#0C447C','Production'],
                         'on_progress'      => ['#EEEDFE','#3C3489','On Progress'],
                         'ready_to_deliver' => ['#EAF3DE','#27500A','Ready'],
@@ -87,7 +87,7 @@
                 <div style="font-size:14px;font-weight:600;margin-bottom:12px;color:#1F2937">Status breakdown</div>
                 @php
                     $statusMap = [
-                        'pending'          => ['Pending',     '#BA7517'],
+                        'indent'          => ['Indent',     '#BA7517'],
                         'production'       => ['Production',  '#378ADD'],
                         'on_progress'      => ['On Progress', '#7F77DD'],
                         'ready_to_deliver' => ['Ready',       '#639922'],
