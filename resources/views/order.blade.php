@@ -573,10 +573,6 @@
             font-size: 13px !important;
         }
 
-        .chip {
-            font-size: 12px;
-        }
-
         .section-label {
             font-size: 12px;
         }
@@ -750,16 +746,20 @@
                                     </div>
 
                                     <!-- Finishing -->
+                                    {{-- Finishing memakai dropdown <select>. id="finishing" menempel di select ini,
+                                         jadi semua JS yang baca document.getElementById('finishing').value tetap jalan. --}}
                                     <div class="field">
                                         <label class="label" style="font-size:13px">Finishing <span class="label-opt">(opsional)</span></label>
-                                        <div class="chips">
-                                            @forelse($finishingTypes as $fin)
-                                            <span class="chip" onclick="selectChip(this)" data-val="{{ $fin->name }}">{{ $fin->name }}</span>
-                                            @empty
-                                            <span style="font-size: 13px; color: var(--muted);">Belum ada pilihan finishing.</span>
-                                            @endforelse
+                                        <div class="sel-wrap">
+                                            <select id="finishing" class="input">
+                                                <option value="">Pilih finishing...</option>
+                                                @forelse($finishingTypes as $fin)
+                                                <option value="{{ $fin->name }}">{{ $fin->name }}</option>
+                                                @empty
+                                                <option value="" disabled>Belum ada pilihan finishing.</option>
+                                                @endforelse
+                                            </select>
                                         </div>
-                                        <input type="hidden" id="finishing" value="">
                                     </div>
                                 </div>
 
@@ -979,20 +979,8 @@
             return selectedProduct;
         }
 
-        /* ── Chip logic ──────────────────────────────────── */
-        function selectChip(el) {
-            if (el.classList.contains('active')) {
-                el.classList.remove('active');
-                selectedFinishing = '';
-                document.getElementById('finishing').value = '';
-                return;
-            }
-            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
-            selectedFinishing = el.dataset.val;
-            document.getElementById('finishing').value = el.dataset.val;
-        }
-
+        /* ── Finishing ───────────────────────────────────── */
+        // Ambil nilai finishing langsung dari dropdown <select id="finishing">.
         function getFinishingValue() {
             return document.getElementById('finishing').value;
         }
@@ -1041,16 +1029,9 @@
                 document.getElementById('thickness').value = it.thickness || '';
                 document.getElementById('luas').value = it.luas || '';
 
-                document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-                document.getElementById('finishing').value = '';
+                // Pulihkan finishing: cukup set value dropdown sesuai data item.
                 selectedFinishing = it.finishing || '';
-                if (it.finishing) {
-                    const chip = document.querySelector(`.chip[data-val="${it.finishing}"]`);
-                    if (chip) {
-                        chip.classList.add('active');
-                        document.getElementById('finishing').value = it.finishing;
-                    }
-                }
+                document.getElementById('finishing').value = it.finishing || '';
 
                 // Di dalam blok if (editIdx !== undefined), ganti bagian gambar:
                 document.getElementById('img-preview-strip').innerHTML = '';
@@ -1073,7 +1054,6 @@
                 document.getElementById('width').value = '';
                 document.getElementById('thickness').value = '';
                 document.getElementById('luas').value = '';
-                document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
                 document.getElementById('finishing').value = '';
                 selectedFinishing = '';
                 document.getElementById('img-preview-strip').innerHTML = '';
