@@ -61,10 +61,12 @@
                         'on_delivery'      => ['#E6F1FB','#0C447C','On Delivery'],
                         default            => ['#F1EFE8','#444441', ucfirst(str_replace('_',' ',$order['status']))],
                     };
+                    $isLate = $days !== null && $days < 0;
+                    $rowBg = $isLate ? '#FEE2E2' : '#FFFFFF';
                 @endphp
-                <div style="display:grid;grid-template-columns:1fr 100px 90px;gap:8px;align-items:center;padding:10px 0;border-bottom:0.5px solid #E5E7EB">
+                <div style="display:grid;grid-template-columns:1fr 100px 90px;gap:8px;align-items:center;padding:10px 0;border-bottom:0.5px solid #E5E7EB;background:{{ $rowBg }};border-radius:6px;padding:10px 8px">
                     <div>
-                        <div style="font-size:13px;font-weight:500;color:#1F2937;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ $order['customer'] }}</div>
+                        <div style="font-size:13px;font-weight:500;color:{{ $isLate ? '#991B1B' : '#1F2937' }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ $order['customer'] }} <span style="font-weight:600;color:{{ $isLate ? '#DC2626' : '#6B7280' }}">{{ $order['quantity'] }}x</span></div>
                         <div style="font-size:11px;color:#9CA3AF;margin-top:2px">{{ $order['id'] }}</div>
                     </div>
                     <div>
