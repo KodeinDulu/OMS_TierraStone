@@ -30,6 +30,7 @@ class SalesDashboard extends Widget
         }
 
         $orders = $query->whereNotIn('status', ['done', 'rejected'])
+            ->with('items')
             ->orderBy('estimated_finish_date')
             ->get()
             ->map(function ($order) {
@@ -37,11 +38,14 @@ class SalesDashboard extends Widget
                     ? now()->diffInDays($order->estimated_finish_date, false)
                     : null;
 
+                $totalQuantity = $order->items->sum('quantity_pcs');
+
                 return [
                     'id'         => $order->order_code,
                     'customer'   => $order->customer_name,
                     'status'     => $order->status,
                     'days_left'  => $daysLeft,
+                    'quantity'   => $totalQuantity,
                     'created_at' => $order->created_at->format('d M Y'),
                 ];
             });
