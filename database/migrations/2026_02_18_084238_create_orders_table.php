@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('customer_name');
             $table->string('customer_phone')->nullable();
             $table->string('customer_address')->nullable();
-            $table->enum('status', ['indent', 'on_progress', 'ready_to_deliver', 'on_delivery', 'rejected', 'done'])->default('indent');
+            $table->enum('status', ['follow_up','indent', 'on_progress', 'ready_to_deliver', 'on_delivery', 'rejected', 'done'])->default('indent');
             $table->date('estimated_finish_date')->nullable();
             $table->timestamp('completed_at')->nullable();
             $table->enum('production_status', [

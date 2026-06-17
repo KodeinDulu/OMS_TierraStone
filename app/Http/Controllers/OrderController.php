@@ -158,7 +158,7 @@ class OrderController extends Controller
             'customer_phone'   => $phone,
             'customer_address' => $request->customer_address,
             'notes'            => $request->notes,
-            'status'           => 'indent',
+            'status'           => 'follow_up',
             'reference_image'  => !empty($imagePaths) ? $imagePaths : null,
         ]);
 

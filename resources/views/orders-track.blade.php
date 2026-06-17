@@ -155,6 +155,11 @@
 
     <script>
         const STATUS_CONFIG = {
+            follow_up: {
+                label: 'Follow Up',
+                icon: 'fa-phone',
+                cls: 'badge-follow_up'
+            },
             indent: {
                 label: 'Indent',
                 icon: 'fa-hourglass-start',
@@ -187,9 +192,25 @@
             },
         };
 
-        const STATUS_FLOW = ['indent', 'on_progress', 'ready_to_deliver', 'on_delivery', 'done'];
+        // "follow_up" ditambahkan sebagai tahap paling awal sebelum "indent"
+        const STATUS_FLOW = ['follow_up', 'indent', 'on_progress', 'ready_to_deliver', 'on_delivery', 'done'];
 
         let cachedOrders = [];
+
+        // Sensor nomor HP: tampilkan 4 digit awal & 4 digit akhir, sisanya di-mask dengan "x"
+        // Contoh: 081234562121 -> 0812xxxx2121
+        function censorPhone(phone) {
+            if (!phone) return '—';
+            const digits = String(phone).replace(/\D/g, '');
+            if (digits.length <= 8) {
+                // Nomor terlalu pendek untuk disensor dengan aman, tampilkan apa adanya
+                return phone;
+            }
+            const prefix = digits.slice(0, 4);
+            const suffix = digits.slice(-4);
+            const masked = 'x'.repeat(digits.length - 8);
+            return `${prefix}${masked}${suffix}`;
+        }
 
         function doSearch() {
             const raw = document.getElementById('search-input').value.trim();
@@ -345,7 +366,7 @@
             document.getElementById('m-order-id').textContent = o.id;
             document.getElementById('m-date').textContent = 'Dibuat ' + o.tanggal;
             document.getElementById('m-nama').textContent = o.nama;
-            document.getElementById('m-phone').textContent = o.phone;
+            document.getElementById('m-phone').textContent = censorPhone(o.phone);
             document.getElementById('m-avatar').textContent = getInitial(o.nama);
 
             document.getElementById('m-status-badge').innerHTML =
