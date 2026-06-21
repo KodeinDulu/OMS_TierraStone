@@ -59,6 +59,7 @@ class OrderForm
                             Select::make('status')
                                 ->label('Status Pesanan')
                                 ->options([
+                                    'follow_up'      => 'Follow Up',
                                     'indent'          => 'Indent',
                                     'on_progress'      => 'On Progress',
                                     'ready_to_deliver' => 'Ready to Deliver',

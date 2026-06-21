@@ -14,6 +14,4 @@ class CompanyProfileController extends Controller
 
         return view('welcome', compact('stoneTypes'));
     }
-
-
 }
