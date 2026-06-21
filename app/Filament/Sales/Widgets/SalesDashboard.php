@@ -57,7 +57,7 @@ class SalesDashboard extends Widget
         return [
             'orders'       => $filtered->values(),
             'total'        => $orders->count(),
-            'indent'      => $orders->where('status', 'indent')->count(),
+            'follow_up'    => $orders->where('status', 'follow_up')->count(),
             'due_soon'     => $orders->filter(fn($o) => $o['days_left'] !== null && $o['days_left'] <= 3 && $o['days_left'] >= 0)->count(),
             'ready'        => $orders->where('status', 'ready_to_deliver')->count(),
             'status_counts' => $orders->groupBy('status')->map->count(),

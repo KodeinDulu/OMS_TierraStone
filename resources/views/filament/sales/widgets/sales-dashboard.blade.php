@@ -5,7 +5,7 @@
     <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
         @foreach([
             ['label'=>'Total order', 'value'=>$total,    'color'=>'#6B7280'],
-            ['label'=>'Indent',     'value'=>$indent,  'color'=>'#F59E0B'],
+            ['label'=>'Follow up',  'value'=>$follow_up, 'color'=>'#8B5CF6'],
             ['label'=>'Tenggat dekat','value'=>$due_soon,'color'=>'#EF4444'],
             ['label'=>'Siap kirim',  'value'=>$ready,    'color'=>'#10B981'],
         ] as $s)
@@ -28,6 +28,7 @@
                 <select wire:model.live="statusFilter"
                     style="font-size:12px;padding:6px 12px;border-radius:6px;border:1px solid #E5E7EB;background:#FFFFFF;color:#1F2937;cursor:pointer;font-weight:500">
                     <option value="">Semua status</option>
+                    <option value="follow_up">Follow Up</option>
                     <option value="indent">Indent</option>
                     <option value="production">Production</option>
                     <option value="on_progress">On Progress</option>
@@ -36,8 +37,9 @@
             </div>
 
             {{-- Col header --}}
-            <div style="display:grid;grid-template-columns:1fr 100px 90px;gap:8px;padding:10px 0 8px 0;border-bottom:1px solid #E5E7EB;margin-bottom:6px">
+            <div style="display:grid;grid-template-columns:1fr 80px 100px 90px;gap:8px;padding:10px 0 8px 0;border-bottom:1px solid #E5E7EB;margin-bottom:6px">
                 <span style="font-size:11px;color:#6B7280;font-weight:600;text-transform:uppercase">Customer / Order ID</span>
+                <span style="font-size:11px;color:#6B7280;font-weight:600;text-transform:uppercase;text-align:center">Total Qty</span>
                 <span style="font-size:11px;color:#6B7280;font-weight:600;text-transform:uppercase">Status</span>
                 <span style="font-size:11px;color:#6B7280;font-weight:600;text-transform:uppercase">Tenggat</span>
             </div>
@@ -64,10 +66,13 @@
                     $isLate = $days !== null && $days < 0;
                     $rowBg = $isLate ? '#FEE2E2' : '#FFFFFF';
                 @endphp
-                <div style="display:grid;grid-template-columns:1fr 100px 90px;gap:8px;align-items:center;padding:10px 0;border-bottom:0.5px solid #E5E7EB;background:{{ $rowBg }};border-radius:6px;padding:10px 8px">
+                <div style="display:grid;grid-template-columns:1fr 80px 100px 90px;gap:8px;align-items:center;padding:10px 8px;border-bottom:0.5px solid #E5E7EB;background:{{ $rowBg }};border-radius:6px">
                     <div>
-                        <div style="font-size:13px;font-weight:500;color:{{ $isLate ? '#991B1B' : '#1F2937' }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ $order['customer'] }} <span style="font-weight:600;color:{{ $isLate ? '#DC2626' : '#6B7280' }}">{{ $order['quantity'] }}x</span></div>
+                        <div style="font-size:13px;font-weight:500;color:{{ $isLate ? '#991B1B' : '#1F2937' }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ $order['customer'] }}</div>
                         <div style="font-size:11px;color:#9CA3AF;margin-top:2px">{{ $order['id'] }}</div>
+                    </div>
+                    <div style="text-align:center">
+                        <span style="font-size:13px;font-weight:600;color:{{ $isLate ? '#DC2626' : '#1F2937' }}">{{ $order['quantity'] }}x</span>
                     </div>
                     <div>
                         <span style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;background:{{ $badgeBg }};color:{{ $badgeColor }};display:inline-block">
@@ -89,11 +94,11 @@
                 <div style="font-size:14px;font-weight:600;margin-bottom:12px;color:#1F2937">Status breakdown</div>
                 @php
                     $statusMap = [
+                        'follow_up'       => ['Follow Up',   '#8B5CF6'],
                         'indent'          => ['Indent',     '#BA7517'],
                         'production'       => ['Production',  '#378ADD'],
                         'on_progress'      => ['On Progress', '#7F77DD'],
                         'ready_to_deliver' => ['Ready',       '#639922'],
-                        'indent'           => ['Indent',      '#BA7517'],
                         'on_delivery'      => ['On Delivery', '#378ADD'],
                     ];
                 @endphp
